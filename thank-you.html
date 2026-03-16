@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submission Received — Mownur Tax Services Rochester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{--dark:#13263a;--light:#f9fbfd;--accent:rgba(125,171,221,0.56);--accent-solid:#7dabdd;--gutter:2rem;--nav-h:72px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+    body{background:var(--light);color:var(--dark);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;cursor:none;overflow-x:hidden;}
+    ::selection{background:var(--dark);color:var(--light);}img{display:block;max-width:100%;}a{text-decoration:none;color:inherit;}
+    #cur{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);background:#fff;mix-blend-mode:difference;transition:width 200ms cubic-bezier(.17,.84,.21,1),height 200ms cubic-bezier(.17,.84,.21,1),opacity 200ms ease;}
+    #cur-ring{position:fixed;top:0;left:0;width:36px;height:36px;border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);border:1.5px solid rgba(255,255,255,0.5);mix-blend-mode:difference;transition:width 350ms cubic-bezier(.17,.84,.21,1),height 350ms cubic-bezier(.17,.84,.21,1),opacity 350ms ease;}
+    body.cur-hover #cur{width:20px;height:20px;}body.cur-hover #cur-ring{width:56px;height:56px;}body.cur-hidden #cur,body.cur-hidden #cur-ring{opacity:0;}
+    .grain{position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:128px 128px;}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);display:flex;align-items:center;padding:0 var(--gutter);background:rgba(249,251,253,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(19,38,58,0.06);}
+    .nav-logo-wrap{flex:1;display:flex;align-items:center;gap:.75rem;font-family:'DM Serif Display',serif;font-size:1.15rem;letter-spacing:-.02em;color:var(--dark);}
+    .nav-logo-svg{width:28px;height:28px;flex-shrink:0;}.nav-logo-rect{fill:var(--dark);}
+    .nav-back{font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(19,38,58,0.45);display:flex;align-items:center;gap:.5rem;cursor:none;transition:color 200ms ease;}
+    .nav-back:hover{color:var(--dark);}.nav-back svg{width:14px;height:14px;}
+
+    /* Hero */
+    .ty-hero{background:var(--dark);padding:calc(var(--nav-h) + 8rem) var(--gutter) 7rem;position:relative;overflow:hidden;text-align:center;}
+    .ty-hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 40%,rgba(125,171,221,0.18) 0%,transparent 60%),radial-gradient(ellipse at 80% 80%,rgba(125,171,221,0.07) 0%,transparent 50%);}
+    .ty-hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto;}
+    .ty-check{width:72px;height:72px;border-radius:50%;background:rgba(125,171,221,0.12);border:1px solid rgba(125,171,221,0.3);display:flex;align-items:center;justify-content:center;margin:0 auto 2.5rem;}
+    .ty-check svg{width:32px;height:32px;stroke:var(--accent-solid);}
+    .ty-eyebrow{font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-solid);margin-bottom:1.5rem;}
+    .ty-h1{font-family:'DM Serif Display',serif;font-size:clamp(2.5rem,6vw,5rem);line-height:1;letter-spacing:-.04em;color:var(--light);margin-bottom:1.5rem;}
+    .ty-sub{font-size:1.05rem;line-height:1.75;color:rgba(249,251,253,0.55);max-width:50ch;margin:0 auto 3rem;}
+
+    /* Portal code box */
+    .ty-code-wrap{display:inline-flex;flex-direction:column;align-items:center;gap:.75rem;background:rgba(249,251,253,0.05);border:1px solid rgba(125,171,221,0.25);border-radius:6px;padding:1.75rem 3rem;margin-bottom:3rem;}
+    .ty-code-label{font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(249,251,253,0.35);}
+    .ty-code-val{font-family:'DM Serif Display',serif;font-size:2.5rem;letter-spacing:.08em;color:var(--light);}
+    .ty-code-hint{font-size:.78rem;color:rgba(249,251,253,0.35);}
+
+    /* Steps */
+    .ty-steps{max-width:900px;margin:0 auto;padding:6rem var(--gutter);}
+    .ty-steps-label{font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:rgba(19,38,58,0.4);display:flex;align-items:center;gap:1rem;margin-bottom:3rem;}
+    .ty-steps-label::before{content:'';display:block;width:2rem;height:1px;background:rgba(19,38,58,0.25);}
+    .ty-steps-title{font-family:'DM Serif Display',serif;font-size:clamp(1.75rem,3.5vw,2.75rem);letter-spacing:-.03em;color:var(--dark);margin-bottom:3rem;}
+    .steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+    @media(max-width:640px){.steps-grid{grid-template-columns:1fr;gap:1.5rem;}}
+    .step-card{padding:2rem;background:#fff;border:1px solid rgba(19,38,58,0.07);border-radius:4px;box-shadow:0 2px 8px rgba(19,38,58,0.04);}
+    .step-num{font-family:'DM Serif Display',serif;font-size:2.5rem;letter-spacing:-.04em;color:rgba(19,38,58,0.12);line-height:1;margin-bottom:1.25rem;}
+    .step-title{font-size:.95rem;font-weight:600;color:var(--dark);margin-bottom:.6rem;}
+    .step-desc{font-size:.88rem;line-height:1.65;color:rgba(19,38,58,0.6);}
+
+    /* Action buttons */
+    .ty-actions{display:flex;align-items:center;justify-content:center;gap:1.5rem;flex-wrap:wrap;padding:0 var(--gutter) 6rem;}
+    .ty-btn{display:inline-flex;align-items:center;gap:.6rem;font-size:.78rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:.9rem 2rem;border-radius:2px;cursor:none;transition:background 250ms ease,border-color 250ms ease,transform 250ms cubic-bezier(.17,.84,.21,1);}
+    .ty-btn:focus-visible{outline:1px solid var(--accent-solid);outline-offset:3px;}
+    .ty-btn--solid{background:var(--dark);color:var(--light);border:1px solid var(--dark);}
+    .ty-btn--solid:hover{background:#1d3650;transform:translateY(-2px);}
+    .ty-btn--outline{color:var(--dark);border:1px solid rgba(19,38,58,0.25);}
+    .ty-btn--outline:hover{border-color:var(--dark);transform:translateY(-2px);}
+
+    /* Footer */
+    footer{background:var(--dark);padding:5rem var(--gutter) 2.5rem;border-top:1px solid rgba(249,251,253,0.06);}
+    .footer-inner{max-width:1200px;margin:0 auto;}
+    .footer-top{display:grid;grid-template-columns:180px 1fr auto;gap:4rem;margin-bottom:4rem;align-items:start;}
+    @media(max-width:768px){.footer-top{grid-template-columns:1fr;gap:2.5rem;}}
+    .footer-logo{font-family:'DM Serif Display',serif;font-size:1.5rem;letter-spacing:-.02em;color:var(--light);}
+    .footer-logo span{color:var(--accent-solid);}
+    .footer-nav-cols{display:flex;gap:4rem;flex-wrap:wrap;}
+    .footer-nav-title{font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(249,251,253,0.3);margin-bottom:1rem;}
+    .footer-nav-links{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+    .footer-nav-link{font-size:.88rem;color:rgba(249,251,253,0.55);transition:color 200ms ease;}
+    .footer-nav-link:hover{color:#f7f7f8;}
+    .footer-contact-item{margin-bottom:1.25rem;}
+    .footer-contact-label{font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(249,251,253,0.3);margin-bottom:.35rem;}
+    .footer-contact-val{font-size:.9rem;color:rgba(249,251,253,0.6);transition:color 200ms ease;line-height:1.5;}
+    .footer-contact-val:hover{color:#f7f7f8;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-top:2rem;border-top:1px solid rgba(249,251,253,0.06);}
+    .footer-copy{font-size:.78rem;color:rgba(249,251,253,0.25);}
+    .footer-social{display:flex;gap:1rem;}
+    .footer-social-link{font-size:.78rem;color:rgba(249,251,253,0.4);transition:color 200ms ease;}
+    .footer-social-link:hover{color:#f7f7f8;}
+    .footer-backtop{font-size:.78rem;color:rgba(249,251,253,0.35);transition:color 200ms ease;}
+    .footer-backtop:hover{color:var(--light);}
+  </style>
+</head>
+<body>
+<div id="cur"></div><div id="cur-ring"></div><div class="grain"></div>
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-logo-wrap">
+    <svg class="nav-logo-svg" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect class="nav-logo-rect" x="2" y="2" width="11" height="11"/><rect class="nav-logo-rect" x="15" y="2" width="11" height="11"/><rect class="nav-logo-rect" x="2" y="15" width="11" height="11"/><rect class="nav-logo-rect" x="15" y="15" width="11" height="11" opacity=".4"/></svg>
+    <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:1.15rem;letter-spacing:-.02em;color:var(--dark);">Mownur Tax Services</a>
+  </div>
+  <a href="index.html" class="nav-back"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M9 2L4 7l5 5"/></svg>Back to home</a>
+</nav>
+
+<section class="ty-hero" aria-label="Submission confirmed">
+  <div class="ty-hero-bg" aria-hidden="true"></div>
+  <div class="ty-hero-inner">
+    <div class="ty-check" aria-hidden="true">
+      <svg viewBox="0 0 32 32" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6,17 13,24 26,10"/></svg>
+    </div>
+    <p class="ty-eyebrow">Submission Received</p>
+    <h1 class="ty-h1">We've Got<br>Your Info.</h1>
+    <p class="ty-sub">Your intake form has been submitted successfully. Save your portal code below — you'll use it to check the status of your return.</p>
+    <div class="ty-code-wrap" id="codeBlock">
+      <span class="ty-code-label">Your Portal Code</span>
+      <span class="ty-code-val" id="portalCode">—</span>
+      <span class="ty-code-hint">Use this to check your return status at any time</span>
+    </div>
+  </div>
+</section>
+
+<section class="ty-steps" aria-label="What happens next">
+  <p class="ty-steps-label">What Happens Next</p>
+  <h2 class="ty-steps-title">Your return is in good hands.<br>Here's what to expect.</h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-title">We Review Your Documents</div>
+      <p class="step-desc">Our team reviews your submitted information and documents within 1–2 business days. If anything is missing, we'll contact you directly.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-title">We Prepare Your Return</div>
+      <p class="step-desc">A tax professional prepares your return and may reach out with questions. Most returns are completed within 5 business days of receiving all documents.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-title">We Notify You</div>
+      <p class="step-desc">Once your return is ready, we'll contact you to review and sign. You can also check your status anytime using your portal code above.</p>
+    </div>
+  </div>
+</section>
+
+<div class="ty-actions">
+  <a href="portal.html#status" class="ty-btn ty-btn--solid">Check My Status →</a>
+  <a href="upload-documents.html" class="ty-btn ty-btn--outline">Upload More Documents</a>
+  <a href="index.html" class="ty-btn ty-btn--outline">Back to Home</a>
+</div>
+
+<footer aria-label="Site footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div><a href="index.html" class="footer-logo">Mownur<span>.</span></a></div>
+      <div class="footer-nav-cols">
+        <div><div class="footer-nav-title">Services</div><ul class="footer-nav-links" role="list"><li><a href="rochester-tax-preperation.html" class="footer-nav-link">Tax Preparation</a></li><li><a href="rochester-itin-application.html" class="footer-nav-link">ITIN Application</a></li><li><a href="rochester-ein.html" class="footer-nav-link">EIN Process</a></li><li><a href="rochester-registration-company.html" class="footer-nav-link">Company Registration</a></li></ul></div>
+        <div><div class="footer-nav-title">Resources</div><ul class="footer-nav-links" role="list"><li><a href="rochester-tax-resources.html" class="footer-nav-link">Tax Resources</a></li><li><a href="mn-tax-help-check-my-refund.html" class="footer-nav-link">Check My Refund</a></li><li><a href="upload-documents.html" class="footer-nav-link">Upload Documents</a></li></ul></div>
+        <div><div class="footer-nav-title">Company</div><ul class="footer-nav-links" role="list"><li><a href="index.html#about" class="footer-nav-link">About Us</a></li><li><a href="index.html#contact" class="footer-nav-link">Contact</a></li><li><a href="privacy-policy.html" class="footer-nav-link">Privacy Policy</a></li><li><a href="terms-of-service.html" class="footer-nav-link">Terms of Service</a></li></ul></div>
+      </div>
+      <div>
+        <div class="footer-contact-item"><div class="footer-contact-label">Phone</div><a href="tel:+15073197168" class="footer-contact-val">(507) 319-7168</a></div>
+        <div class="footer-contact-item"><div class="footer-contact-label">Address</div><a href="https://www.google.com/maps/dir//1207+7th+St+NW+%233,+Rochester,+MN+55901" class="footer-contact-val" target="_blank" rel="noopener">1207 7th St NW #3<br>Rochester, MN 55901</a></div>
+        <div class="footer-contact-item"><div class="footer-contact-label">Hours</div><div class="footer-contact-val" style="cursor:default;">Open 24 Hours</div></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">© <span id="yr"></span> Mownur Tax Services · Rochester, MN</p><div class="footer-social"><a href="https://www.facebook.com/MownurTaxServices" class="footer-social-link" target="_blank" rel="noopener">Facebook</a><a href="upload-documents.html" class="footer-social-link">Upload Docs</a></div><a href="#" class="footer-backtop">Back to top ↑</a></div>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+// Pull portal code from URL params (portal.html appends ?code=XXXX on redirect)
+const params=new URLSearchParams(window.location.search);
+const code=params.get('code');
+if(code){document.getElementById('portalCode').textContent=code.toUpperCase();}
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+document.addEventListener('mouseleave',()=>document.body.classList.add('cur-hidden'));
+document.addEventListener('mouseenter',()=>document.body.classList.remove('cur-hidden'));
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px';}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px';}requestAnimationFrame(loop);})();
+</script>
+</body>
+</html>

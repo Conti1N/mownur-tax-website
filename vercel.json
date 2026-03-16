@@ -1,0 +1,51 @@
+{
+  "version": 2,
+  "runtime": "nodejs20.x",
+  "functions": {
+    "api/submit-intake.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/upload-docs.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    },
+    "api/check-status.js": {
+      "maxDuration": 10
+    },
+    "api/admin-update.js": {
+      "maxDuration": 15
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" },
+        { "key": "Access-Control-Allow-Methods", "value": "GET, POST, OPTIONS" },
+        { "key": "Access-Control-Allow-Headers", "value": "Content-Type" }
+      ]
+    }
+  ],
+  "env": {
+    "AZURE_CLIENT_ID": "@azure-client-id",
+    "AZURE_CLIENT_SECRET": "@azure-client-secret",
+    "AZURE_TENANT_ID": "@azure-tenant-id",
+    "ONEDRIVE_FOLDER": "@onedrive-folder",
+    "EXCEL_FILE_ID": "@excel-file-id",
+    "TEAMS_WEBHOOK_URL": "@teams-webhook-url",
+    "ADMIN_PASSWORD": "@admin-password",
+    "EMAIL_FROM": "@email-from",
+    "SITE_URL": "@site-url"
+  }
+}

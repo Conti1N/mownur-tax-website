@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Upload Documents — Mownur Tax Services Rochester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{--dark:#13263a;--light:#f9fbfd;--accent:rgba(125,171,221,0.56);--accent-solid:#7dabdd;--gutter:2rem;--nav-h:72px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+    body{background:var(--light);color:var(--dark);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;cursor:none;overflow-x:hidden;min-height:100dvh;}
+    ::selection{background:var(--dark);color:var(--light);}a{text-decoration:none;color:inherit;}
+    #cur{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);background:#fff;mix-blend-mode:difference;transition:width 200ms cubic-bezier(.17,.84,.21,1),height 200ms cubic-bezier(.17,.84,.21,1),opacity 200ms ease;}
+    #cur-ring{position:fixed;top:0;left:0;width:36px;height:36px;border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);border:1.5px solid rgba(255,255,255,0.5);mix-blend-mode:difference;transition:width 350ms cubic-bezier(.17,.84,.21,1),height 350ms cubic-bezier(.17,.84,.21,1),opacity 350ms ease;}
+    body.cur-hover #cur{width:20px;height:20px;}body.cur-hover #cur-ring{width:56px;height:56px;}body.cur-hidden #cur,body.cur-hidden #cur-ring{opacity:0;}
+    .grain{position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:128px 128px;}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);display:flex;align-items:center;padding:0 var(--gutter);background:rgba(249,251,253,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(19,38,58,0.06);}
+    .nav-logo-wrap{flex:1;display:flex;align-items:center;gap:.75rem;font-family:'DM Serif Display',serif;font-size:1.15rem;letter-spacing:-.02em;color:var(--dark);}
+    .nav-logo-svg{width:28px;height:28px;flex-shrink:0;}.nav-logo-rect{fill:var(--dark);}
+    .nav-back{font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(19,38,58,0.45);display:flex;align-items:center;gap:.5rem;cursor:none;transition:color 200ms ease;}
+    .nav-back:hover{color:var(--dark);}.nav-back svg{width:14px;height:14px;}
+    .upload-wrap{min-height:100dvh;padding-top:var(--nav-h);display:flex;align-items:center;justify-content:center;padding-left:var(--gutter);padding-right:var(--gutter);}
+    .upload-card{background:#fff;border:1px solid rgba(19,38,58,0.08);border-radius:8px;box-shadow:0 8px 40px rgba(19,38,58,0.08),0 2px 8px rgba(19,38,58,0.05);padding:3rem;width:100%;max-width:540px;}
+    .upload-label{font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-solid);display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;}
+    .upload-label::before{content:'';display:block;width:2rem;height:1px;background:var(--accent-solid);}
+    .upload-title{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,2.8rem);letter-spacing:-.03em;line-height:1.1;color:var(--dark);margin-bottom:.75rem;}
+    .upload-sub{font-size:.9rem;line-height:1.7;color:rgba(19,38,58,0.55);margin-bottom:2.5rem;}
+    .form-group{margin-bottom:1.25rem;}
+    .form-label{display:block;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(19,38,58,0.5);margin-bottom:.5rem;}
+    .form-label span{color:#e05555;margin-left:2px;}
+    .form-input,.form-select{width:100%;padding:.75rem 1rem;background:var(--light);border:1px solid rgba(19,38,58,0.14);border-radius:3px;font-family:'Inter',sans-serif;font-size:.92rem;color:var(--dark);outline:none;cursor:none;transition:border-color 200ms ease,box-shadow 200ms ease;}
+    .form-input:focus,.form-select:focus{border-color:var(--accent-solid);box-shadow:0 0 0 3px rgba(125,171,221,0.18);}
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+    @media(max-width:480px){.form-row{grid-template-columns:1fr;}}
+    .drop-zone{border:2px dashed rgba(19,38,58,0.15);border-radius:4px;padding:2.5rem;text-align:center;cursor:none;transition:border-color 200ms ease,background 200ms ease;}
+    .drop-zone:hover,.drop-zone.dragging{border-color:var(--accent-solid);background:rgba(125,171,221,0.05);}
+    .drop-icon{width:44px;height:44px;margin:0 auto 1rem;opacity:.4;}
+    .drop-text{font-size:.9rem;color:rgba(19,38,58,0.5);margin-bottom:.5rem;}
+    .drop-text strong{color:var(--dark);}
+    .drop-hint{font-size:.78rem;color:rgba(19,38,58,0.35);}
+    .drop-input{display:none;}
+    .file-list{margin-top:1rem;display:flex;flex-direction:column;gap:.5rem;}
+    .file-item{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.6rem .9rem;background:rgba(19,38,58,0.04);border-radius:3px;font-size:.82rem;color:var(--dark);}
+    .file-item-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+    .file-item-remove{background:none;border:none;cursor:none;color:rgba(19,38,58,0.3);font-size:1rem;line-height:1;padding:0;transition:color 200ms ease;}
+    .file-item-remove:hover{color:#e05555;}
+    .submit-btn{width:100%;padding:1rem;background:var(--dark);color:var(--light);border:none;border-radius:3px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;cursor:none;margin-top:2rem;transition:background 250ms ease,transform 250ms cubic-bezier(.17,.84,.21,1),opacity 200ms ease;}
+    .submit-btn:hover{background:#1e3a57;transform:translateY(-2px);}
+    .submit-btn:focus-visible{outline:2px solid var(--accent-solid);outline-offset:3px;}
+    .submit-btn:disabled{opacity:.5;transform:none;}
+    .status-msg{margin-top:1.25rem;padding:.9rem 1rem;border-radius:3px;font-size:.85rem;text-align:center;display:none;}
+    .status-msg.success{background:rgba(34,139,34,0.08);color:#1a6b1a;border:1px solid rgba(34,139,34,0.2);display:block;}
+    .status-msg.error{background:rgba(224,85,85,0.08);color:#a03030;border:1px solid rgba(224,85,85,0.2);display:block;}
+    .divider{height:1px;background:rgba(19,38,58,0.08);margin:2rem 0;}
+    .alt-text{font-size:.82rem;color:rgba(19,38,58,0.4);text-align:center;}
+    .alt-text a{color:var(--accent-solid);font-weight:500;transition:color 200ms ease;}
+    .alt-text a:hover{color:var(--dark);}
+  </style>
+</head>
+<body>
+<div id="cur"></div><div id="cur-ring"></div><div class="grain"></div>
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-logo-wrap">
+    <svg class="nav-logo-svg" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect class="nav-logo-rect" x="2" y="2" width="11" height="11"/><rect class="nav-logo-rect" x="15" y="2" width="11" height="11"/><rect class="nav-logo-rect" x="2" y="15" width="11" height="11"/><rect class="nav-logo-rect" x="15" y="15" width="11" height="11" opacity=".4"/></svg>
+    <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:1.15rem;letter-spacing:-.02em;color:var(--dark);">Mownur Tax Services</a>
+  </div>
+  <a href="index.html" class="nav-back"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M9 2L4 7l5 5"/></svg>Back to home</a>
+</nav>
+
+<div class="upload-wrap">
+  <div class="upload-card">
+    <p class="upload-label">Existing Client</p>
+    <h1 class="upload-title">Upload Your<br>Documents.</h1>
+    <p class="upload-sub">Already working with us? Upload your tax documents directly to your file. We'll receive them securely and update your return.</p>
+
+    <form id="uploadForm" novalidate>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="upFirstName">First Name <span aria-hidden="true">*</span></label>
+          <input class="form-input" type="text" id="upFirstName" autocomplete="given-name" required placeholder="Jane" />
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="upLastName">Last Name <span aria-hidden="true">*</span></label>
+          <input class="form-input" type="text" id="upLastName" autocomplete="family-name" required placeholder="Doe" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="upLast4">Last 4 of SSN / ITIN <span aria-hidden="true">*</span></label>
+        <input class="form-input" type="text" id="upLast4" inputmode="numeric" pattern="\d{4}" maxlength="4" required placeholder="1234" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="upDocType">Document Type</label>
+        <select class="form-select" id="upDocType">
+          <option value="">Select document type</option>
+          <option value="w2">W-2 (Wage Statement)</option>
+          <option value="1099">1099 (Misc / NEC / INT / DIV)</option>
+          <option value="id">Government ID</option>
+          <option value="ss_card">Social Security Card</option>
+          <option value="1095">Form 1095 (Health Coverage)</option>
+          <option value="mortgage">Mortgage Interest Statement</option>
+          <option value="other">Other / Multiple</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="upFiles">Files <span aria-hidden="true">*</span></label>
+        <div class="drop-zone" id="dropZone" role="button" tabindex="0" aria-label="Drop files here or click to browse">
+          <svg class="drop-icon" viewBox="0 0 44 44" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <path d="M22 28V16M22 16L17 21M22 16L27 21"/>
+            <rect x="6" y="6" width="32" height="32" rx="4"/>
+          </svg>
+          <p class="drop-text"><strong>Drop files here</strong> or click to browse</p>
+          <p class="drop-hint">PDF, JPG, PNG · Max 20MB per file</p>
+          <input class="drop-input" type="file" id="upFiles" multiple accept=".pdf,.jpg,.jpeg,.png" />
+        </div>
+        <div class="file-list" id="fileList"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="upNote">Note (Optional)</label>
+        <input class="form-input" type="text" id="upNote" placeholder="e.g. This is my second W-2 from part-time job" />
+      </div>
+      <button class="submit-btn" type="submit" id="uploadBtn">Upload Documents</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </form>
+
+    <div class="divider"></div>
+    <p class="alt-text">First time filing with us? <a href="portal.html">Complete the intake form instead →</a></p>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr') && (document.getElementById('yr').textContent = new Date().getFullYear());
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+document.addEventListener('mouseleave',()=>document.body.classList.add('cur-hidden'));
+document.addEventListener('mouseenter',()=>document.body.classList.remove('cur-hidden'));
+document.querySelectorAll('a,button,input,select,[role="button"]').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px';}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px';}requestAnimationFrame(loop);})();
+
+/* File drop zone */
+const dropZone=document.getElementById('dropZone');
+const fileInput=document.getElementById('upFiles');
+const fileList=document.getElementById('fileList');
+let selectedFiles=[];
+
+function renderFiles(){
+  fileList.innerHTML='';
+  selectedFiles.forEach((f,i)=>{
+    const item=document.createElement('div');
+    item.className='file-item';
+    item.innerHTML=`<span class="file-item-name">${f.name}</span><span style="font-size:.75rem;color:rgba(19,38,58,0.35)">${(f.size/1024/1024).toFixed(1)}MB</span><button class="file-item-remove" data-idx="${i}" aria-label="Remove ${f.name}" type="button">×</button>`;
+    fileList.appendChild(item);
+  });
+  fileList.querySelectorAll('.file-item-remove').forEach(btn=>{
+    btn.addEventListener('click',()=>{selectedFiles.splice(+btn.dataset.idx,1);renderFiles();});
+  });
+}
+
+dropZone.addEventListener('click',()=>fileInput.click());
+dropZone.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();fileInput.click();}});
+dropZone.addEventListener('dragover',e=>{e.preventDefault();dropZone.classList.add('dragging');});
+dropZone.addEventListener('dragleave',()=>dropZone.classList.remove('dragging'));
+dropZone.addEventListener('drop',e=>{
+  e.preventDefault();dropZone.classList.remove('dragging');
+  selectedFiles=[...selectedFiles,...Array.from(e.dataTransfer.files)];renderFiles();
+});
+fileInput.addEventListener('change',()=>{
+  selectedFiles=[...selectedFiles,...Array.from(fileInput.files)];
+  fileInput.value='';renderFiles();
+});
+
+/* Form submit — sends to /api/upload-docs */
+document.getElementById('uploadForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const btn=document.getElementById('uploadBtn');
+  const msg=document.getElementById('statusMsg');
+  msg.className='status-msg';msg.textContent='';
+
+  const first=document.getElementById('upFirstName').value.trim();
+  const last=document.getElementById('upLastName').value.trim();
+  const last4=document.getElementById('upLast4').value.trim();
+  if(!first||!last||!last4||!/^\d{4}$/.test(last4)){
+    msg.className='status-msg error';msg.textContent='Please fill in all required fields. Last 4 must be exactly 4 digits.';return;
+  }
+  if(selectedFiles.length===0){
+    msg.className='status-msg error';msg.textContent='Please attach at least one file.';return;
+  }
+
+  btn.disabled=true;btn.textContent='Uploading…';
+
+  const fd=new FormData();
+  fd.append('firstName',first);fd.append('lastName',last);fd.append('last4',last4);
+  fd.append('docType',document.getElementById('upDocType').value);
+  fd.append('note',document.getElementById('upNote').value.trim());
+  selectedFiles.forEach(f=>fd.append('files',f));
+
+  try{
+    const res=await fetch('/api/upload-docs',{method:'POST',body:fd});
+    if(res.ok){
+      msg.className='status-msg success';
+      msg.textContent='Documents uploaded successfully! We\'ll review them and update your file shortly.';
+      document.getElementById('uploadForm').reset();selectedFiles=[];renderFiles();
+    } else {
+      const data=await res.json().catch(()=>({}));
+      msg.className='status-msg error';
+      msg.textContent=data.error||'Upload failed. Please try again or call us at (507) 319-7168.';
+    }
+  }catch{
+    msg.className='status-msg error';
+    msg.textContent='Network error. Please check your connection and try again.';
+  } finally{
+    btn.disabled=false;btn.textContent='Upload Documents';
+  }
+});
+</script>
+
+<footer style="background:#0d1c2b;border-top:1px solid rgba(249,251,253,0.07);padding:2rem 2rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;font-family:'Inter',sans-serif;">
+  <p style="font-size:0.78rem;color:rgba(249,251,253,0.3);margin:0;">© <script>document.write(new Date().getFullYear())</script> Mownur Tax Services · Rochester, MN</p>
+  <nav style="display:flex;gap:1.5rem;flex-wrap:wrap;">
+    <a href="index.html" style="font-size:0.78rem;color:rgba(249,251,253,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(249,251,253,0.8)'" onmouseout="this.style.color='rgba(249,251,253,0.4)'">Home</a>
+    <a href="portal.html" style="font-size:0.78rem;color:rgba(249,251,253,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(249,251,253,0.8)'" onmouseout="this.style.color='rgba(249,251,253,0.4)'">File Online</a>
+    <a href="book-appointment.html" style="font-size:0.78rem;color:rgba(249,251,253,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(249,251,253,0.8)'" onmouseout="this.style.color='rgba(249,251,253,0.4)'">Book Appointment</a>
+    <a href="faq.html" style="font-size:0.78rem;color:rgba(249,251,253,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(249,251,253,0.8)'" onmouseout="this.style.color='rgba(249,251,253,0.4)'">FAQ</a>
+    <a href="index.html#contact" style="font-size:0.78rem;color:rgba(249,251,253,0.4);text-decoration:none;" onmouseover="this.style.color='rgba(249,251,253,0.8)'" onmouseout="this.style.color='rgba(249,251,253,0.4)'">Contact</a>
+  </nav>
+</footer>
+</body>
+</html>

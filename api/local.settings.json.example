@@ -1,0 +1,19 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+
+    "ONEDRIVE_FOLDER": "Mownur Clients",
+    "ONEDRIVE_USER_ID": "admin@mownurservices.com",
+    "EXCEL_FILE_ID": "your-excel-file-item-id",
+    "TEAMS_WEBHOOK_URL": "https://your-org.webhook.office.com/webhookb2/...",
+    "ADMIN_PASSWORD": "choose-a-strong-password-here",
+    "EMAIL_FROM": "admin@mownurservices.com",
+    "SITE_URL": "http://localhost:4280",
+
+    "AZURE_TENANT_ID": "your-tenant-id-for-local-dev-only",
+    "AZURE_CLIENT_ID": "your-client-id-for-local-dev-only",
+    "AZURE_CLIENT_SECRET": "your-client-secret-for-local-dev-only"
+  }
+}

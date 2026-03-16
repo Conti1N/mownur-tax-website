@@ -1,0 +1,2448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mownur Tax Services — Rochester Tax Professionals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    /* ── RESET & TOKENS ── */
+    :root {
+      --dark: #13263a;
+      --light: #f9fbfd;
+      --accent: rgba(125,171,221,0.56);
+      --accent-solid: #7dabdd;
+      --gutter: 2rem;
+      --nav-h: 72px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--light);
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      cursor: none;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--dark); color: var(--light); text-shadow: none; }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── CURSOR ── */
+    #cur {
+      position: fixed; top: 0; left: 0;
+      width: 10px; height: 10px;
+      border-radius: 50%; pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%,-50%);
+      background: #fff;
+      mix-blend-mode: difference;
+      transition: width 200ms cubic-bezier(.17,.84,.21,1),
+                  height 200ms cubic-bezier(.17,.84,.21,1),
+                  opacity 200ms ease;
+    }
+    #cur-ring {
+      position: fixed; top: 0; left: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%; pointer-events: none;
+      z-index: 99998;
+      transform: translate(-50%,-50%);
+      border: 1.5px solid rgba(255,255,255,0.5);
+      mix-blend-mode: difference;
+      transition: width 350ms cubic-bezier(.17,.84,.21,1),
+                  height 350ms cubic-bezier(.17,.84,.21,1),
+                  opacity 350ms ease;
+    }
+    body.cur-hover #cur { width: 20px; height: 20px; }
+    body.cur-hover #cur-ring { width: 56px; height: 56px; }
+    body.cur-hidden #cur, body.cur-hidden #cur-ring { opacity: 0; }
+
+    /* ── PAGE WIPE (transition) ── */
+    #page-wipe {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 0; background: var(--dark);
+      z-index: 8000; pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--nav-h);
+      display: flex; align-items: center;
+      padding: 0 var(--gutter);
+      transition: background 400ms ease;
+    }
+    .nav.is-scrolled { background: rgba(249,251,253,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .nav.is-white { color: var(--light); }
+    .nav.is-white .nav-logo-rect { fill: var(--light); }
+    .nav.is-white .nav-burger-line { background: var(--light); }
+    .nav.is-white.is-scrolled { color: var(--dark); }
+    .nav.is-white.is-scrolled .nav-logo-rect { fill: var(--dark); }
+    .nav.is-white.is-scrolled .nav-burger-line { background: var(--dark); }
+
+    .nav-logo-wrap { flex: 1; display: flex; align-items: center; gap: 0.75rem; }
+    .nav-logo-svg { align-self: center; }
+    .nav-logo-svg { width: 28px; height: 28px; flex-shrink: 0; }
+    .nav-logo-rect { fill: var(--light); transition: fill 300ms ease; }
+    .nav-logo-text-stack { display: flex; flex-direction: column; gap: 0; }
+    .nav-logo-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem; letter-spacing: -0.02em; line-height: 1;
+      overflow: hidden; height: 1.4em;
+      color: var(--light); transition: color 300ms ease;
+    }
+    .nav.is-scrolled .nav-logo-name { color: var(--dark); }
+    .nav.is-white:not(.is-scrolled) .nav-logo-name { color: var(--light); }
+    .nav-logo-shift {
+      display: block;
+      transition: transform 600ms cubic-bezier(.58,0,.07,1);
+    }
+    .nav-lang {
+      display: flex; align-items: center; gap: 0.3rem;
+      margin-top: 0.2rem;
+    }
+    .nav-lang-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.6rem; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; background: none; border: none;
+      cursor: none; padding: 0; line-height: 1;
+      color: rgba(249,251,253,0.35);
+      transition: color 200ms ease;
+    }
+    .nav-lang-btn.active { color: rgba(249,251,253,0.75); }
+    .nav-lang-btn:hover { color: rgba(249,251,253,0.9); }
+    .nav.is-scrolled .nav-lang-btn { color: rgba(19,38,58,0.3); }
+    .nav.is-scrolled .nav-lang-btn.active { color: rgba(19,38,58,0.65); }
+    .nav.is-scrolled .nav-lang-btn:hover { color: var(--dark); }
+    .nav-lang-sep {
+      font-size: 0.55rem; line-height: 1;
+      color: rgba(249,251,253,0.2);
+      transition: color 300ms ease;
+    }
+    .nav.is-scrolled .nav-lang-sep { color: rgba(19,38,58,0.18); }
+
+    /* desktop nav links (hidden, use burger only like CMCC) */
+    .nav-burger {
+      display: flex; flex-direction: column; gap: 4px;
+      cursor: none; background: none; border: none; padding: 4px;
+      position: relative; z-index: 10;
+    }
+    .nav-burger-line {
+      display: block; width: 16px; height: 1.5px; background: var(--light);
+      transition: transform 350ms cubic-bezier(.17,.84,.21,1),
+                  opacity 350ms ease, background 300ms ease;
+      transform-origin: center;
+      backface-visibility: hidden;
+    }
+    .nav.is-scrolled .nav-burger-line { background: var(--dark); }
+    .nav.is-open .nav-burger-line:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .nav.is-open .nav-burger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav.is-open .nav-burger-line:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    /* ── MENU BACKDROP ── */
+    #menuBackdrop {
+      position: fixed; inset: 0; z-index: 899;
+      background: rgba(19,38,58,0.55);
+      backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px);
+      opacity: 0; pointer-events: none;
+      transition: opacity 400ms ease;
+    }
+    #menuBackdrop.is-visible { opacity: 1; pointer-events: auto; }
+
+    /* ── MAIN WRAPPER BLUR (when menu open, like CMCC) ── */
+    #mainWrapper {
+      transition: filter 400ms ease, transform 400ms ease;
+    }
+    #mainWrapper.is-blur {
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    /* ── SIDE DRAWER MENU ── */
+    .menu-overlay {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 280px;
+      z-index: 900;
+      background: var(--dark);
+      /* layered grain texture */
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+      border-right: 1px solid rgba(125,171,221,0.1);
+      box-shadow: 4px 0 40px rgba(19,38,58,0.5), 1px 0 0 rgba(125,171,221,0.06);
+      transform: translateX(-100%);
+      pointer-events: none;
+      transition: transform 480ms cubic-bezier(.58,0,.07,1);
+    }
+    .menu-overlay.is-open {
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .menu-inner {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column;
+      padding: calc(var(--nav-h) + 2.5rem) 0 2.5rem;
+      overflow-y: auto;
+    }
+
+    /* radial accent glow top-left inside drawer */
+    .menu-inner::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle at 0% 0%, rgba(125,171,221,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .menu-links { list-style: none; margin: 0; flex: 1; }
+    .menu-link-item {
+      overflow: hidden;
+      border-bottom: 1px solid rgba(249,251,253,0.055);
+    }
+    .menu-link-text {
+      display: flex; align-items: center; justify-content: space-between;
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.35rem; letter-spacing: -0.02em; line-height: 1;
+      color: rgba(249,251,253,0.75);
+      padding: 1rem 1.75rem;
+      transform: translateX(-24px);
+      opacity: 0;
+      transition: transform 500ms cubic-bezier(.17,.84,.21,1),
+                  opacity 400ms ease,
+                  color 200ms ease,
+                  background 200ms ease;
+    }
+    .menu-overlay.is-open .menu-link-text {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    .menu-link-item:nth-child(1) .menu-link-text { transition-delay: 0.07s; }
+    .menu-link-item:nth-child(2) .menu-link-text { transition-delay: 0.11s; }
+    .menu-link-item:nth-child(3) .menu-link-text { transition-delay: 0.15s; }
+    .menu-link-item:nth-child(4) .menu-link-text { transition-delay: 0.19s; }
+    .menu-link-item:nth-child(5) .menu-link-text { transition-delay: 0.23s; }
+    .menu-link-item:nth-child(6) .menu-link-text { transition-delay: 0.27s; }
+    .menu-link-item:nth-child(7) .menu-link-text { transition-delay: 0.31s; }
+    .menu-link-item:nth-child(8) .menu-link-text { transition-delay: 0.35s; }
+    .menu-link-text:hover { color: var(--light); background: rgba(125,171,221,0.07); }
+    .menu-link-text:hover::after { content: '→'; font-family: 'Inter',sans-serif; font-size: 0.85rem; color: var(--accent-solid); }
+    .menu-link-text:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: -2px; }
+
+    .menu-bottom {
+      border-top: 1px solid rgba(249,251,253,0.07);
+      padding: 1.25rem 1.75rem 0;
+      display: flex; flex-direction: column; gap: 0.9rem;
+    }
+    .menu-contact-links { display: flex; flex-direction: column; gap: 0.5rem; }
+    .menu-contact-link {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.75rem; letter-spacing: 0.04em;
+      color: rgba(249,251,253,0.38);
+      display: block;
+      transition: color 200ms ease;
+    }
+    .menu-contact-link span { display: block; }
+    .menu-contact-link:hover { color: rgba(249,251,253,0.72); }
+    .menu-lang {
+      display: flex; gap: 0.4rem; align-items: center;
+    }
+    .menu-lang-btn {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.65rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(249,251,253,0.3); background: none; border: none; cursor: none;
+      padding: 0.3rem 0.6rem;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      transition: color 200ms ease, border-color 200ms ease;
+    }
+    .menu-lang-btn.active { color: rgba(249,251,253,0.8); border-color: rgba(249,251,253,0.2); }
+    .menu-lang-btn:hover { color: var(--light); }
+    .menu-lang-btn:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 90dvh;
+      background: var(--dark);
+      position: relative; overflow: hidden;
+      display: grid;
+      grid-template-rows: 1fr auto;
+    }
+
+    /* Animated geometric cubes background */
+    .hero-cubes {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .cube {
+      position: absolute;
+      border: 1px solid rgba(249,251,253,0.06);
+      animation: cubeDrift linear infinite;
+    }
+    @keyframes cubeDrift {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { transform: translateY(-110vh) rotate(180deg); opacity: 0; }
+    }
+    .cube:nth-child(1)  { width:60px;  height:60px;  left:10%;  bottom:-10%; animation-duration:18s; animation-delay:0s; }
+    .cube:nth-child(2)  { width:20px;  height:20px;  left:25%;  bottom:-10%; animation-duration:14s; animation-delay:2s; }
+    .cube:nth-child(3)  { width:100px; height:100px; left:40%;  bottom:-10%; animation-duration:22s; animation-delay:5s; }
+    .cube:nth-child(4)  { width:40px;  height:40px;  left:55%;  bottom:-10%; animation-duration:16s; animation-delay:1s; }
+    .cube:nth-child(5)  { width:80px;  height:80px;  left:70%;  bottom:-10%; animation-duration:20s; animation-delay:3s; }
+    .cube:nth-child(6)  { width:30px;  height:30px;  left:85%;  bottom:-10%; animation-duration:13s; animation-delay:7s; }
+    .cube:nth-child(7)  { width:50px;  height:50px;  left:5%;   bottom:-10%; animation-duration:17s; animation-delay:4s; }
+    .cube:nth-child(8)  { width:140px; height:140px; left:60%;  bottom:-10%; animation-duration:25s; animation-delay:6s; }
+    .cube:nth-child(9)  { width:25px;  height:25px;  left:35%;  bottom:-10%; animation-duration:12s; animation-delay:9s; }
+    .cube:nth-child(10) { width:70px;  height:70px;  left:78%;  bottom:-10%; animation-duration:19s; animation-delay:2s; }
+    .cube:nth-child(11) { width:45px;  height:45px;  left:18%;  bottom:-10%; animation-duration:15s; animation-delay:8s; }
+    .cube:nth-child(12) { width:90px;  height:90px;  left:48%;  bottom:-10%; animation-duration:21s; animation-delay:11s; }
+
+    /* filled cubes */
+    .cube.solid {
+      background: rgba(249,251,253,0.025);
+      border-color: rgba(249,251,253,0.08);
+    }
+
+    .hero-content {
+      position: relative; z-index: 2;
+      display: grid;
+      grid-template-columns: calc(55% + 1em) calc(100% / 3 - var(--gutter));
+      align-items: end;
+      padding: calc(var(--nav-h) + 6rem) var(--gutter) 0;
+      gap: 0;
+      justify-content: space-between;
+    }
+
+    .hero-left { padding-bottom: 6rem; }
+
+    .hero-label {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(249,251,253,0.65);
+      margin-bottom: 2.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      opacity: 0; transform: translateY(20px);
+      animation: hFadeUp 700ms cubic-bezier(.17,.84,.21,1) 0.3s both;
+    }
+    .hero-label::before {
+      content: ''; display: block;
+      width: 2.5rem; height: 1px; background: rgba(249,251,253,0.4);
+    }
+
+    .hero-h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(4rem, 8.5vw, 8.5rem);
+      line-height: 0.94; letter-spacing: -0.04em;
+      color: var(--light); margin-bottom: 3.5rem;
+    }
+    .hero-h1-line { display: block; overflow: hidden; }
+    .hero-h1-inner {
+      display: block;
+      opacity: 0;
+      animation: hLineReveal 900ms cubic-bezier(.17,.84,.21,1) both;
+      backface-visibility: hidden;
+    }
+    .hero-h1-line:nth-child(1) .hero-h1-inner { animation-delay: 0.35s; }
+    .hero-h1-line:nth-child(2) .hero-h1-inner { animation-delay: 0.50s; }
+    .hero-h1-line:nth-child(3) .hero-h1-inner { animation-delay: 0.65s; }
+
+    @keyframes hLineReveal {
+      from { transform: translateY(105%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    @keyframes hFadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; gap: 2rem;
+      opacity: 0;
+      animation: hFadeUp 700ms cubic-bezier(.17,.84,.21,1) 0.85s both;
+    }
+    .hero-cta {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--light);
+      display: inline-flex; align-items: center; gap: 0.6rem;
+      padding: 0.85rem 1.8rem;
+      border: 1px solid rgba(249,251,253,0.25);
+      border-radius: 2px;
+      transition: background 250ms ease, border-color 250ms ease, transform 250ms cubic-bezier(.17,.84,.21,1);
+      box-shadow: 0 0 0 0 rgba(249,251,253,0);
+    }
+    .hero-cta:hover {
+      background: rgba(249,251,253,0.08);
+      border-color: rgba(249,251,253,0.5);
+      transform: translateY(-2px);
+    }
+    .hero-cta:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+    .hero-cta-arrow {
+      display: inline-block;
+      transition: transform 250ms cubic-bezier(.17,.84,.21,1);
+      backface-visibility: hidden;
+    }
+    .hero-cta:hover .hero-cta-arrow { transform: translate(3px,-3px); }
+
+    .hero-cta-ghost {
+      font-size: 0.78rem; font-weight: 400; letter-spacing: 0.06em;
+      text-transform: uppercase; color: rgba(249,251,253,0.5);
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      border-bottom: 1px solid rgba(249,251,253,0.2);
+      padding-bottom: 2px;
+      transition: color 250ms ease, border-color 250ms ease, gap 250ms ease;
+    }
+    .hero-cta-ghost:hover { color: var(--light); border-color: rgba(249,251,253,0.6); gap: 0.9rem; }
+    .hero-cta-ghost:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+
+    /* Hero right — rotating tabs */
+    .hero-right {
+      position: relative;
+      padding-bottom: 6rem;
+      opacity: 0;
+      animation: hFadeUp 900ms cubic-bezier(.17,.84,.21,1) 0.5s both;
+      align-self: end;
+    }
+    .hero-tabs { position: relative; min-height: 220px; }
+    .hero-tab-pane {
+      position: absolute; top: 0; left: 0; right: 0;
+      pointer-events: none;
+    }
+    .hero-tab-pane.active { pointer-events: auto; }
+    .htab-hl {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 5vw, 5rem);
+      line-height: 0.96; letter-spacing: -0.04em;
+      color: var(--light);
+      overflow: hidden;
+    }
+    .htab-hl-inner {
+      display: block;
+      transform: translateY(100%);
+      transition: transform 700ms cubic-bezier(.17,.84,.21,1);
+      backface-visibility: hidden;
+    }
+    .hero-tab-pane.active .htab-hl-inner { transform: translateY(0); }
+    .htab-text {
+      font-size: 0.88rem; line-height: 1.65;
+      color: rgba(249,251,253,0.5); margin-top: 1.2rem;
+      max-width: 36ch;
+      transform: translateY(100%);
+      transition: transform 700ms cubic-bezier(.17,.84,.21,1) 0.08s, opacity 400ms ease;
+      opacity: 0;
+    }
+    .hero-tab-pane.active .htab-text { transform: translateY(0); opacity: 1; }
+
+    .hero-tab-indicators {
+      display: flex; gap: 0.5rem; margin-top: 2.5rem;
+    }
+    .htab-dot {
+      width: 24px; height: 2px;
+      background: rgba(249,251,253,0.2); border: none; cursor: none;
+      padding: 0; transition: background 300ms ease, width 300ms ease;
+    }
+    .htab-dot.active { background: var(--light); width: 40px; }
+    .htab-dot:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+
+    /* Hero bottom scroll indicator */
+    .hero-scroll-row {
+      position: relative; z-index: 2;
+      padding: 2rem var(--gutter);
+      display: flex; align-items: center; justify-content: space-between;
+      border-top: 1px solid rgba(249,251,253,0.1);
+      opacity: 0;
+      animation: hFadeUp 600ms ease 1.2s both;
+    }
+    .hero-scroll-label {
+      font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(249,251,253,0.5);
+    }
+    .hero-scroll-line {
+      width: 60px; height: 1px;
+      background: linear-gradient(to right, rgba(249,251,253,0.4), transparent);
+      animation: scrollLineGrow 2.5s ease-in-out infinite;
+    }
+    @keyframes scrollLineGrow {
+      0%,100%{ width:40px; opacity:.4; }
+      50%    { width:80px; opacity:.9; }
+    }
+    .hero-location {
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(249,251,253,0.5);
+    }
+
+    /* ── THESIS SECTION ── */
+    .thesis {
+      background: var(--light);
+      padding: 11rem var(--gutter);
+      position: relative; overflow: hidden;
+    }
+    /* gradient cubes image behind this section */
+    .thesis-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      background: radial-gradient(ellipse at 80% 50%, rgba(125,171,221,0.09) 0%, transparent 65%),
+                  radial-gradient(ellipse at 20% 80%, rgba(19,38,58,0.04) 0%, transparent 60%);
+    }
+    .thesis-inner {
+      position: relative; z-index: 1;
+      max-width: 900px;
+    }
+    .thesis-eyebrow {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(19,38,58,0.4);
+      margin-bottom: 2.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .thesis-eyebrow::before {
+      content: ''; display: block; width: 2.5rem; height: 1px;
+      background: rgba(19,38,58,0.25);
+    }
+    .thesis-body {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 4.2vw, 3.8rem);
+      line-height: 1.18; letter-spacing: -0.03em;
+      color: var(--dark);
+      text-indent: 4rem;
+      max-width: 1000px;
+    }
+    .thesis-body em {
+      font-style: italic;
+      color: rgba(19,38,58,0.5);
+    }
+
+    /* ── STAT BLOCKS (parallax rows) ── */
+    .stats-section {
+      background: var(--dark);
+      padding: 7rem 0;
+      overflow: hidden;
+    }
+    .stats-row {
+      display: flex; gap: 0;
+      border-top: 1px solid rgba(249,251,253,0.07);
+      will-change: transform;
+    }
+    .stats-row:last-child { border-bottom: 1px solid rgba(249,251,253,0.07); }
+    .stat-block {
+      flex: 1;
+      padding: 2.5rem var(--gutter);
+      border-right: 1px solid rgba(249,251,253,0.07);
+    }
+    .stat-block:last-child { border-right: none; }
+    .stat-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3.2rem, 6vw, 5.5rem);
+      line-height: 1; letter-spacing: -0.04em;
+      color: var(--light); margin-bottom: 0.6rem;
+    }
+    .stat-label {
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(249,251,253,0.38); font-weight: 500;
+    }
+
+    /* ── VALUES LIST ── */
+    .values {
+      background: var(--light);
+      padding: 11rem var(--gutter);
+    }
+    .values-header {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: end; margin-bottom: 6rem;
+    }
+    .section-label {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(19,38,58,0.4);
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .section-label::before {
+      content: ''; display: block; width: 2.5rem; height: 1px;
+      background: rgba(19,38,58,0.25);
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+      line-height: 0.97; letter-spacing: -0.04em;
+      color: var(--dark);
+    }
+    .values-intro {
+      font-size: 1rem; line-height: 1.72;
+      color: rgba(19,38,58,0.58); max-width: 42ch;
+      align-self: end;
+    }
+    .values-list { list-style: none; }
+    .values-item {
+      display: flex; align-items: baseline; gap: 2.5rem;
+      padding: 2.5rem 0;
+      border-top: 1px solid rgba(19,38,58,0.07);
+      transition: background 250ms ease;
+      position: relative; cursor: default;
+    }
+    .values-item:last-child { border-bottom: 1px solid rgba(19,38,58,0.07); }
+    .values-item.active .val-name { color: var(--dark); }
+    .values-item.active .val-num { color: rgba(19,38,58,0.5); }
+    .val-num {
+      font-family: 'DM Serif Display', serif; font-size: 0.9rem;
+      color: rgba(19,38,58,0.2); letter-spacing: 0.04em;
+      min-width: 2.5rem; transition: color 400ms ease;
+    }
+    .val-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3.4rem);
+      letter-spacing: -0.03em; line-height: 1.0;
+      color: rgba(19,38,58,0.2);
+      transition: color 500ms ease;
+    }
+    .values-item.active .val-name { color: var(--dark); }
+    .val-desc {
+      font-size: 0.875rem; line-height: 1.65;
+      color: rgba(19,38,58,0.5); max-width: 42ch;
+      margin-left: auto;
+      opacity: 0; max-height: 0; overflow: hidden;
+      transition: opacity 400ms ease, max-height 400ms ease;
+    }
+    .values-item.active .val-desc { opacity: 1; max-height: 8rem; }
+
+    /* ── SERVICES — horizontal carousel ── */
+    .services-section {
+      background: var(--dark);
+      padding: 11rem 0;
+      overflow: hidden;
+    }
+    .services-head {
+      padding: 0 var(--gutter);
+      display: grid; grid-template-columns: 1fr 1fr;
+      align-items: end; gap: 3rem; margin-bottom: 4rem;
+    }
+    .section-label-light {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(249,251,253,0.38);
+      display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .section-label-light::before {
+      content: ''; display: block; width: 2.5rem; height: 1px;
+      background: rgba(249,251,253,0.2);
+    }
+    .section-title-light {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.8rem, 5.5vw, 5.2rem);
+      line-height: 0.97; letter-spacing: -0.04em; color: var(--light);
+    }
+    .services-desc {
+      font-size: 0.95rem; line-height: 1.7;
+      color: rgba(249,251,253,0.48); max-width: 42ch; align-self: end;
+    }
+    /* splide-style scroll */
+    .svc-carousel-wrap {
+      overflow: hidden;
+    }
+    .svc-carousel {
+      display: flex; gap: 5rem;
+      padding: 0 var(--gutter);
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+      cursor: grab;
+    }
+    .svc-carousel::-webkit-scrollbar { display: none; }
+    .svc-carousel.dragging { cursor: grabbing; }
+    .svc-card {
+      flex-shrink: 0;
+      width: calc(33.33% - 1rem);
+      min-width: 340px;
+      scroll-snap-align: start;
+      background: rgba(249,251,253,0.04);
+      border: 1px solid rgba(249,251,253,0.08);
+      border-radius: 3px;
+      padding: 3.5rem 2.5rem;
+      display: flex; flex-direction: column; gap: 2rem;
+      min-height: 400px;
+      transition: background 300ms ease, border-color 300ms ease, transform 300ms cubic-bezier(.17,.84,.21,1);
+    }
+    .svc-card:hover {
+      background: rgba(249,251,253,0.08);
+      border-color: rgba(249,251,253,0.2);
+      transform: translateY(-6px);
+    }
+    .svc-card:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+    .svc-card-num {
+      font-family: 'DM Serif Display', serif; font-size: 0.85rem;
+      color: rgba(249,251,253,0.2); letter-spacing: 0.06em;
+    }
+    .svc-card-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 2.6vw, 2.6rem);
+      letter-spacing: -0.03em; line-height: 1.05; color: var(--light);
+      flex: 1;
+    }
+    .svc-card-desc {
+      font-size: 0.85rem; line-height: 1.65; color: rgba(249,251,253,0.45);
+    }
+    .svc-card-link {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(249,251,253,0.5);
+      border-bottom: 1px solid rgba(249,251,253,0.15);
+      padding-bottom: 2px; align-self: flex-start;
+      transition: color 250ms ease, border-color 250ms ease, gap 250ms ease;
+    }
+    .svc-card-link:hover { color: var(--light); border-color: rgba(249,251,253,0.5); gap: 0.9rem; }
+    .svc-card-arrow { transition: transform 250ms cubic-bezier(.17,.84,.21,1); backface-visibility: hidden; display: inline-block; }
+    .svc-card-link:hover .svc-card-arrow { transform: translate(3px,-3px); }
+
+    .carousel-nav {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 2.5rem var(--gutter) 0;
+    }
+    .carousel-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid rgba(249,251,253,0.18);
+      background: none; cursor: none; color: var(--light);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      transition: background 250ms ease, border-color 250ms ease, transform 250ms cubic-bezier(.17,.84,.21,1);
+    }
+    .carousel-btn:hover { background: rgba(249,251,253,0.08); border-color: rgba(249,251,253,0.4); transform: scale(1.05); }
+    .carousel-btn:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+    .carousel-progress {
+      flex: 1; height: 1px; background: rgba(249,251,253,0.1); position: relative;
+    }
+    .carousel-progress-fill {
+      position: absolute; top: 0; left: 0; height: 100%;
+      background: rgba(249,251,253,0.5);
+      transition: width 400ms cubic-bezier(.17,.84,.21,1);
+    }
+
+    /* ── ABOUT / STORY SECTION ── */
+    .story {
+      background: var(--light);
+      padding: 11rem var(--gutter);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8rem; align-items: start;
+    }
+    .story-left { position: sticky; top: calc(var(--nav-h) + 3rem); }
+    .story-img-wrap {
+      aspect-ratio: 4/5; border-radius: 3px; overflow: hidden;
+      position: relative; margin-bottom: 2rem;
+    }
+    .story-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .story-img-wrap::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(19,38,58,0.55) 0%, transparent 55%);
+    }
+    .story-img-label {
+      position: absolute; bottom: 1.5rem; left: 1.5rem; z-index: 2;
+      font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--light); font-weight: 500;
+    }
+    .story-meta {
+      display: flex; gap: 2.5rem; padding-top: 1.5rem;
+      border-top: 1px solid rgba(19,38,58,0.07);
+    }
+    .story-meta-label {
+      font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(19,38,58,0.35); margin-bottom: 0.3rem; font-weight: 500;
+    }
+    .story-meta-val {
+      font-family: 'DM Serif Display', serif; font-size: 1.25rem;
+      color: var(--dark); letter-spacing: -0.02em;
+    }
+    .story-body {
+      font-size: 1.05rem; line-height: 1.78;
+      color: rgba(19,38,58,0.65); margin-bottom: 3rem;
+      text-indent: 4rem;
+    }
+    .story-body strong { color: var(--dark); font-weight: 500; }
+    .story-pull {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.6rem, 2.8vw, 2.6rem);
+      line-height: 1.2; letter-spacing: -0.03em;
+      color: var(--dark);
+      border-left: 2px solid var(--accent-solid);
+      padding-left: 1.5rem;
+      margin: 3.5rem 0;
+    }
+    .story-cta {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--dark); border-bottom: 1px solid rgba(19,38,58,0.25); padding-bottom: 2px;
+      transition: gap 250ms ease, border-color 250ms ease;
+    }
+    .story-cta:hover { gap: 1.1rem; border-color: var(--dark); }
+    .story-cta:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+
+    /* ── TESTIMONIAL ── */
+    .testimonial {
+      background: var(--dark);
+      padding: 10rem var(--gutter);
+    }
+    .t-inner {
+      max-width: 820px; margin: 0 auto; text-align: center;
+    }
+    .t-stars { color: var(--accent-solid); font-size: 1.1rem; letter-spacing: 4px; margin-bottom: 2.5rem; display: block; }
+    .t-quote {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      line-height: 1.25; letter-spacing: -0.03em;
+      color: var(--light); margin-bottom: 2.5rem; font-style: italic;
+    }
+    .t-attribution {
+      font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(249,251,253,0.35);
+    }
+    .t-attribution strong { color: rgba(249,251,253,0.7); font-weight: 500; }
+    .t-links {
+      display: flex; justify-content: center; gap: 2rem; margin-top: 3rem;
+      flex-wrap: wrap;
+    }
+    .t-link {
+      font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(249,251,253,0.38);
+      border-bottom: 1px solid rgba(249,251,253,0.12); padding-bottom: 2px;
+      transition: color 250ms ease, border-color 250ms ease;
+    }
+    .t-link:hover { color: var(--light); border-color: rgba(249,251,253,0.45); }
+    .t-link:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+
+    /* ── CONTACT / NEXT UP ── */
+    .contact {
+      background: #f0f3f7;
+      padding: 11rem var(--gutter);
+      position: relative; overflow: hidden;
+    }
+    @media only screen and (min-width: 992px) {
+      .contact {
+        margin-left: -27.5vw;
+        width: calc(100% + 27.5vw);
+        padding-left: calc(var(--gutter) + 27.5vw);
+      }
+    }
+    .contact-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 8rem; align-items: start;
+    }
+    .contact-cta-head {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 0.95; letter-spacing: -0.04em;
+      color: var(--dark); margin-bottom: 2.5rem;
+    }
+    .contact-cta-sub {
+      font-size: 1rem; line-height: 1.72;
+      color: rgba(19,38,58,0.58); max-width: 38ch; margin-bottom: 3rem;
+    }
+    .contact-btn {
+      display: inline-flex; align-items: center; gap: 0.7rem;
+      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--light);
+      background: var(--dark); padding: 1rem 2rem; border-radius: 2px;
+      transition: background 250ms ease, transform 250ms cubic-bezier(.17,.84,.21,1);
+      box-shadow: 0 4px 24px rgba(19,38,58,0.14);
+    }
+    .contact-btn:hover { background: #1e3a57; transform: translateY(-2px); }
+    .contact-btn:active { transform: translateY(0); }
+    .contact-btn:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+    .contact-btn .btn-arrow { transition: transform 250ms cubic-bezier(.17,.84,.21,1); backface-visibility: hidden; display: inline-block; }
+    .contact-btn:hover .btn-arrow { transform: translate(3px,-3px); }
+
+    .contact-info-block {
+      margin-bottom: 3rem;
+      padding-bottom: 2.5rem;
+      border-bottom: 1px solid rgba(19,38,58,0.07);
+    }
+    .contact-info-block:last-child { border-bottom: none; margin-bottom: 0; }
+    .ci-label {
+      font-size: 0.68rem; letter-spacing: 0.16em; text-transform: uppercase;
+      color: rgba(19,38,58,0.32); margin-bottom: 0.75rem; font-weight: 500;
+    }
+    .ci-value {
+      font-size: 1rem; color: var(--dark); line-height: 1.65;
+    }
+    .ci-value a { transition: color 200ms ease; }
+    .ci-value a:hover { color: var(--accent-solid); }
+    .ci-value a:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+    .hours-table { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 2rem; }
+    .h-day { font-size: 0.9rem; color: rgba(19,38,58,0.55); }
+    .h-time { font-size: 0.9rem; color: var(--dark); }
+    .contact-action-links {
+      display: flex; flex-direction: column; gap: 0.6rem; margin-top: 1.5rem;
+    }
+    .ca-link {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 1.25rem; border: 1px solid rgba(19,38,58,0.1);
+      border-radius: 2px; font-size: 0.8rem; font-weight: 500;
+      letter-spacing: 0.06em; text-transform: uppercase; color: var(--dark);
+      transition: background 250ms ease, border-color 250ms ease, transform 250ms ease;
+    }
+    .ca-link:hover { background: rgba(19,38,58,0.04); border-color: rgba(19,38,58,0.25); transform: translateX(4px); }
+    .ca-link:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      position: relative; overflow: hidden;
+    }
+    .footer-bg-blocks {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .fbg {
+      position: absolute;
+      border: 1px solid rgba(249,251,253,0.05);
+    }
+    .footer-inner {
+      position: relative; z-index: 1;
+      padding: 4rem var(--gutter) 2.5rem;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1fr 2fr 1fr;
+      gap: 3rem; align-items: start;
+      padding-bottom: 3rem; border-bottom: 1px solid rgba(249,251,253,0.07);
+      margin-bottom: 2rem;
+    }
+    .footer-logo {
+      font-family: 'DM Serif Display', serif; font-size: 1.2rem;
+      color: var(--light); letter-spacing: -0.02em;
+    }
+    .footer-logo span { color: var(--accent-solid); }
+    .footer-nav-cols { display: flex; gap: 4rem; flex-wrap: wrap; }
+    .footer-nav-title {
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(249,251,253,0.25); margin-bottom: 1.2rem; font-weight: 500;
+    }
+    .footer-nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.65rem; }
+    .footer-nav-link {
+      font-size: 0.82rem; color: rgba(249,251,253,0.45);
+      transition: color 250ms ease;
+      position: relative;
+    }
+    .footer-nav-link:hover { color: #f7f7f8; }
+    .footer-nav-link:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; border-radius: 2px; }
+    .footer-contact-item { margin-bottom: 1.25rem; }
+    .footer-contact-label {
+      font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase;
+      color: rgba(249,251,253,0.22); margin-bottom: 0.3rem; font-weight: 500;
+    }
+    .footer-contact-val {
+      font-size: 0.82rem; color: rgba(249,251,253,0.5);
+      transition: color 250ms ease;
+    }
+    .footer-contact-val:hover { color: #f7f7f8; }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-copy {
+      font-size: 0.7rem; letter-spacing: 0.04em; color: rgba(249,251,253,0.18);
+    }
+    .footer-social { display: flex; gap: 1rem; }
+    .footer-social-link {
+      font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(249,251,253,0.3); transition: color 250ms ease;
+    }
+    .footer-social-link:hover { color: #f7f7f8; }
+    .footer-social-link:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; border-radius: 2px; }
+    .footer-backtop {
+      font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(249,251,253,0.28); transition: color 250ms ease;
+      display: inline-flex; align-items: center; gap: 0.4rem;
+    }
+    .footer-backtop:hover { color: var(--light); }
+    .footer-backtop:focus-visible { outline: 1px solid var(--accent-solid); outline-offset: 3px; border-radius: 2px; }
+
+    /* ── HOW TO FILE ── */
+    .how-to-file {
+      background: var(--dark);
+      padding: 7rem var(--gutter);
+      position: relative; overflow: hidden;
+    }
+    .how-to-file::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 80% 50%, rgba(125,171,221,0.1) 0%, transparent 70%),
+                  radial-gradient(ellipse 40% 60% at 10% 80%, rgba(125,171,221,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .how-to-file-header {
+      max-width: 1200px; margin: 0 auto 4rem;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 4rem; align-items: end;
+      position: relative; z-index: 1;
+    }
+    @media (max-width: 700px) {
+      .how-to-file-header { grid-template-columns: 1fr; gap: 1.5rem; }
+    }
+    .htf-label {
+      font-size: 0.68rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: var(--accent-solid); margin-bottom: 1.25rem;
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .htf-label::before {
+      content: ''; display: block;
+      width: 2rem; height: 1px; background: var(--accent-solid);
+    }
+    .htf-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 4.5vw, 4rem);
+      letter-spacing: -0.04em; line-height: 1.0;
+      color: var(--light);
+    }
+    .htf-intro {
+      font-size: 1rem; line-height: 1.72;
+      color: rgba(249,251,253,0.5);
+      max-width: 40ch; align-self: end;
+    }
+    .how-to-file-list {
+      max-width: 1200px; margin: 0 auto;
+      position: relative; z-index: 1;
+    }
+    .how-to-file-item {
+      display: block;
+      border-top: 1px solid rgba(249,251,253,0.08);
+      text-decoration: none; color: inherit;
+      cursor: pointer;
+      transition: background 250ms ease;
+    }
+    .how-to-file-item:last-child { border-bottom: 1px solid rgba(249,251,253,0.08); }
+    .how-to-file-item:hover { background: rgba(249,251,253,0.03); }
+    .how-to-file-item:hover .htf-name { color: var(--light); }
+    .how-to-file-item:hover .htf-cta { opacity: 1; transform: translateX(0); }
+    .htf-item-inner {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 2rem;
+      padding: 2.5rem 0;
+    }
+    .htf-item-left {
+      display: flex; align-items: baseline; gap: 2.5rem;
+    }
+    .htf-num {
+      font-family: 'DM Serif Display', serif;
+      font-size: 0.9rem; color: rgba(249,251,253,0.2);
+      letter-spacing: 0.04em; min-width: 2.5rem;
+    }
+    .htf-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+      letter-spacing: -0.03em; line-height: 1.0;
+      color: rgba(249,251,253,0.25);
+      transition: color 400ms ease;
+    }
+    .htf-slogan {
+      font-size: 0.88rem; line-height: 1.6;
+      color: rgba(249,251,253,0.35);
+      margin-top: 0.4rem;
+    }
+    .htf-cta {
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--accent-solid);
+      white-space: nowrap; flex-shrink: 0;
+      opacity: 0; transform: translateX(-10px);
+      transition: opacity 300ms ease,
+                  transform 300ms cubic-bezier(.17,.84,.21,1);
+    }
+    .htf-btn-row {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; gap: 1.25rem; flex-wrap: wrap;
+      position: relative; z-index: 1;
+    }
+    .htf-btn {
+      display: inline-block;
+      font-size: 0.85rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      text-decoration: none;
+      padding: 1rem 2.25rem;
+      border-radius: 3px;
+      transition: opacity 200ms ease, transform 200ms ease;
+    }
+    .htf-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .htf-btn:active { transform: translateY(0); }
+    .htf-btn--outline {
+      color: var(--light);
+      border: 1px solid rgba(249,251,253,0.3);
+      background: transparent;
+    }
+    .htf-btn--outline:hover { border-color: rgba(249,251,253,0.6); }
+    .htf-btn--solid {
+      color: var(--dark);
+      background: var(--accent-solid);
+      border: 1px solid var(--accent-solid);
+    }
+
+    /* ── SCROLL REVEALS ── */
+    .rv {
+      opacity: 0; transform: translateY(50px);
+      transition: opacity 800ms cubic-bezier(.17,.84,.21,1),
+                  transform 800ms cubic-bezier(.17,.84,.21,1);
+      backface-visibility: hidden;
+    }
+    .rv.in { opacity: 1; transform: translateY(0); }
+
+    /* ── SPLIT TEXT (word-by-word reveal like CMCC) ── */
+    .split-wrap { overflow: hidden; display: inline-block; vertical-align: bottom; }
+    .split-word {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: opacity 800ms cubic-bezier(.17,.84,.21,1),
+                  transform 800ms cubic-bezier(.17,.84,.21,1);
+      backface-visibility: hidden;
+    }
+    .split-word.in { opacity: 1; transform: translateY(0); }
+
+    /* ── CTA BUTTON FILL SWEEP ── */
+    .btn-fill-wrap {
+      position: relative; overflow: hidden; display: inline-flex;
+      align-items: center; gap: 0.7rem;
+    }
+    .btn-fill-inner {
+      position: absolute; inset: 0;
+      background: rgba(249,251,253,0.1);
+      transform: translateX(-101%);
+      transition: transform 350ms cubic-bezier(.17,.84,.21,1);
+    }
+    .btn-fill-wrap:hover .btn-fill-inner { transform: translateX(0); }
+    .btn-fill-wrap .btn-fill-text { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.7rem; }
+
+    /* Contact button fill sweep */
+    .contact-btn {
+      position: relative; overflow: hidden;
+    }
+    .contact-btn .btn-sweep {
+      position: absolute; inset: 0;
+      background: rgba(249,251,253,0.08);
+      transform: translateX(-101%);
+      transition: transform 350ms cubic-bezier(.17,.84,.21,1);
+    }
+    .contact-btn:hover .btn-sweep { transform: translateX(0); }
+    .contact-btn span.btn-content { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.7rem; }
+
+    /* Service card link arrow grow */
+    .svc-card-link { position: relative; }
+
+    /* ── MENU LINK UNDERLINE — div-based scale like CMCC ── */
+    .menu-link-text { position: relative; }
+    .menu-link-line {
+      display: block;
+      position: absolute; bottom: 0; left: 0;
+      width: 100%; height: 1px;
+      background: rgba(249,251,253,0.3);
+      transform: scaleX(0);
+      transform-origin: left center;
+      backface-visibility: hidden;
+      transition: transform 400ms cubic-bezier(.17,.84,.21,1),
+                  background-color 250ms ease;
+    }
+    .menu-link-text:hover .menu-link-line { transform: scaleX(1); }
+    .menu-link-text.w--current .menu-link-line {
+      transform: scaleX(1);
+      background: rgba(249,251,253,0.7);
+    }
+
+    /* ── TEAM / PEOPLE SECTION ── */
+    .team-section {
+      background: var(--light);
+      padding: 11rem var(--gutter);
+      overflow-x: clip;
+    }
+    .team-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .team-left {
+      position: sticky;
+      top: calc(var(--nav-h) + 3rem);
+    }
+    .team-right {
+      overflow-x: clip;
+    }
+    .team-intro {
+      font-size: 1rem; line-height: 1.72;
+      color: rgba(19,38,58,0.58); max-width: 38ch;
+    }
+
+    /* SVG clip mask for photos */
+    .people-svg-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+    .people-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 100%;
+      position: relative;
+    }
+
+    .person-item {
+      position: relative;
+    }
+
+    /* Stagger even cards downward to create interlock rhythm */
+    .person-item:nth-child(even) {
+      margin-top: 4rem;
+    }
+
+    .person-photo-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      border-radius: 2px;
+    }
+    .person-photo-wrap img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
+      /* grayscale with color on hover like editorial photography */
+      filter: grayscale(20%);
+      transition: filter 500ms ease, transform 600ms cubic-bezier(.17,.84,.21,1);
+    }
+    .person-item:hover .person-photo-wrap img {
+      filter: grayscale(0%);
+      transform: scale(1.03);
+    }
+    /* gradient overlay on photo bottom */
+    .person-photo-wrap::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(19,38,58,0.65) 0%, rgba(19,38,58,0.1) 40%, transparent 65%);
+      pointer-events: none;
+      transition: opacity 400ms ease;
+    }
+    .person-item:hover .person-photo-wrap::after {
+      opacity: 0.7;
+    }
+
+    /* Name/title overlaid on photo bottom */
+    .person-text {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 1.5rem 1.25rem 1.25rem;
+      z-index: 2;
+      transform: translateY(4px);
+      transition: transform 400ms cubic-bezier(.17,.84,.21,1);
+    }
+    .person-item:hover .person-text { transform: translateY(0); }
+
+    .person-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      letter-spacing: -0.02em; line-height: 1.1;
+      color: var(--light); margin-bottom: 0.25rem;
+    }
+    .person-title {
+      font-size: 0.68rem; font-weight: 500; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(249,251,253,0.6);
+    }
+
+    /* Even cards: name on top, title below (reversed order) */
+    .person-item:nth-child(even) .person-text {
+      top: 0; bottom: auto;
+      padding: 1.25rem 1.25rem 0;
+      background: none;
+      transform: translateY(-4px);
+    }
+    .person-item:nth-child(even) .person-photo-wrap::after {
+      background: linear-gradient(to bottom, rgba(19,38,58,0.65) 0%, rgba(19,38,58,0.1) 40%, transparent 65%);
+    }
+    .person-item:nth-child(even) .person-name { order: -1; }
+
+    /* On mobile — disable the stagger offset */
+    /* old breakpoints merged into main responsive block above */
+
+    /* ── STORY IMAGE PARALLAX ── */
+    .story-img-inner {
+      position: absolute; inset: -10% 0;
+      width: 100%; height: 120%;
+    }
+    .story-img-inner img {
+      width: 100%; height: 100%; object-fit: cover;
+      display: block;
+    }
+    .story-img-wrap {
+      position: relative; overflow: hidden;
+    }
+
+    /* ── FOOTER BLOCK STAGGER — driven by JS scroll scrub ── */
+    .fbg { will-change: opacity, transform; }
+
+    /* ── ROADMAP / TIMELINE ── */
+    .roadmap-section {
+      background: var(--dark);
+      padding: 9rem var(--gutter);
+      position: relative;
+      overflow: hidden;
+    }
+    .roadmap-inner {
+      position: relative;
+    }
+    .roadmap-line {
+      position: absolute; left: 0; top: 0; bottom: 0;
+      width: 1px; background: rgba(249,251,253,0.12);
+    }
+    .roadmap-line-fill {
+      position: absolute; top: 0; left: 0; width: 100%;
+      background: var(--accent-solid);
+      height: 0%;
+      transition: height 80ms linear;
+    }
+    .roadmap-items { padding-left: 2.5rem; }
+    @media(max-width:860px){
+      .roadmap-section > div { grid-template-columns: 1fr !important; gap: 3rem !important; }
+    }
+    .roadmap-item {
+      position: relative; padding: 2.5rem 0;
+      border-bottom: 1px solid rgba(249,251,253,0.06);
+      opacity: 0; transform: translateX(-16px);
+      transition: opacity 600ms cubic-bezier(.17,.84,.21,1),
+                  transform 600ms cubic-bezier(.17,.84,.21,1);
+    }
+    .roadmap-item.in { opacity: 1; transform: translateX(0); }
+    .roadmap-item::before {
+      content: '';
+      position: absolute; left: -2.5rem; top: 2.8rem;
+      width: 9px; height: 9px; border-radius: 50%;
+      border: 1.5px solid rgba(249,251,253,0.4);
+      background: var(--dark);
+      transform: translateX(-4px);
+      transition: background 300ms ease, border-color 300ms ease;
+    }
+    .roadmap-item.in::before {
+      border-color: var(--accent-solid);
+    }
+    .roadmap-year {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.18em;
+      text-transform: uppercase; color: var(--accent-solid);
+      margin-bottom: 0.5rem;
+    }
+    .roadmap-heading {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(1.2rem, 2vw, 1.7rem);
+      letter-spacing: -0.02em; line-height: 1.2;
+      color: var(--light); margin-bottom: 0.6rem;
+    }
+    .roadmap-body {
+      font-size: 0.88rem; line-height: 1.65;
+      color: rgba(249,251,253,0.48);
+    }
+
+    /* ── RESPONSIVE ── */
+
+    /* ≤991px — tablet and below */
+    @media (max-width: 991px) {
+      .hero {
+        min-height: 95svh;
+        min-height: 95vh; /* fallback */
+      }
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-right { display: none; }
+      .values-header { grid-template-columns: 1fr; gap: 1.5rem; }
+      .val-desc { display: none; }
+      .services-head { grid-template-columns: 1fr; gap: 1.5rem; }
+      .svc-card { width: 80vw; min-width: 280px; }
+      .story { grid-template-columns: 1fr; gap: 3rem; }
+      .story-left { position: static; }
+      .contact-grid { grid-template-columns: 1fr; gap: 4rem; }
+      /* Remove broken-grid offset on mobile */
+      .contact {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-left: var(--gutter) !important;
+      }
+      .footer-top { grid-template-columns: 1fr; gap: 2.5rem; }
+      .stats-row { flex-wrap: wrap; }
+      .stat-block { flex: 0 0 50%; }
+      /* Team: collapse to 1 col sticky+grid side-by-side → stacked */
+      .team-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .team-left { position: static; }
+      /* People grid: even cards get reduced offset */
+      .person-item:nth-child(even) { margin-top: 2rem; }
+    }
+
+    /* ≤767px */
+    @media (max-width: 767px) {
+      .thesis { padding: 7rem var(--gutter); }
+      .values { padding: 7rem var(--gutter); }
+      .services-section { padding: 7rem 0; }
+      .story { padding: 7rem var(--gutter); }
+      .team-section { padding: 7rem var(--gutter); }
+      .testimonial { padding: 7rem var(--gutter); }
+      .contact { padding: 7rem var(--gutter) !important; }
+    }
+
+    /* ≤600px */
+    @media (max-width: 600px) {
+      :root { --gutter: 1.25rem; }
+      .hero-h1 { font-size: clamp(2.6rem, 9vw, 3.5rem); }
+      .stat-block { flex: 0 0 100%; }
+      .values-item { flex-wrap: wrap; gap: 1rem; }
+      .footer-nav-cols { gap: 2rem; }
+      .svc-carousel { gap: 2rem; }
+      .svc-card { width: 88vw; }
+      .contact-cta-head { font-size: clamp(2.4rem, 8vw, 3.5rem); }
+    }
+
+    /* ≤497px — CMCC mobile portrait */
+    @media (max-width: 497px) {
+      .hero { min-height: 95svh; min-height: 95vh; }
+      /* Timeline markers hidden */
+      .roadmap-marker { display: none; }
+      .roadmap-item { padding-left: 0; }
+      .roadmap-line { display: none; }
+      /* People grid: single column, no offset */
+      .people-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+      .person-item:nth-child(even) { margin-top: 0; }
+      .person-item:nth-child(even) .person-text { top: auto; bottom: 0; padding: 1.5rem 1.25rem 1.25rem; }
+      .person-item:nth-child(even) .person-photo-wrap::after {
+        background: linear-gradient(to top, rgba(19,38,58,0.65) 0%, rgba(19,38,58,0.1) 40%, transparent 65%);
+      }
+    }
+
+    /* ≤420px */
+    @media (max-width: 420px) {
+      .hero-h1 { font-size: clamp(2.2rem, 10vw, 3rem); }
+      .section-title, .section-title-light { font-size: clamp(2rem, 8vw, 3rem); }
+      .thesis-body { font-size: clamp(1.7rem, 7vw, 2.4rem); text-indent: 2rem; }
+      .contact-cta-head { font-size: clamp(2rem, 8vw, 2.8rem); }
+      .menu-link-text { font-size: clamp(1.8rem, 8vw, 3rem); }
+    }
+
+    /* grain */
+    .grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 5000;
+      opacity: 0.022;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 120px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div id="cur" aria-hidden="true"></div>
+<div id="cur-ring" aria-hidden="true"></div>
+<div id="page-wipe" aria-hidden="true"></div>
+
+<!-- ── FULL-SCREEN MENU ── -->
+<div id="menuBackdrop"></div>
+<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="menu-inner">
+    <ul class="menu-links" role="list">
+      <li class="menu-link-item"><a href="rochester-tax-preperation.html" class="menu-link-text">Tax Preparation<div class="menu-link-line" aria-hidden="true"></div></a></li>
+      <li class="menu-link-item"><a href="rochester-itin-application.html" class="menu-link-text">ITIN Application<div class="menu-link-line" aria-hidden="true"></div></a></li>
+      <li class="menu-link-item"><a href="rochester-ein.html" class="menu-link-text">EIN Process<div class="menu-link-line" aria-hidden="true"></div></a></li>
+      <li class="menu-link-item"><a href="rochester-registration-company.html" class="menu-link-text">Company Registration<div class="menu-link-line" aria-hidden="true"></div></a></li>
+      <li class="menu-link-item"><a href="rochester-tax-resources.html" class="menu-link-text">Tax Resources<div class="menu-link-line" aria-hidden="true"></div></a></li>
+      <li class="menu-link-item"><a href="mn-tax-help-check-my-refund.html" class="menu-link-text">Check My Refund<div class="menu-link-line" aria-hidden="true"></div></a></li>
+      <li class="menu-link-item"><a href="portal.html" class="menu-link-text">File Online<div class="menu-link-line" aria-hidden="true"></div></a></li>
+      <li class="menu-link-item"><a href="#contact" class="menu-link-text">Contact<div class="menu-link-line" aria-hidden="true"></div></a></li>
+    </ul>
+    <div class="menu-bottom">
+      <div class="menu-contact-links">
+        <a href="tel:+15073197168" class="menu-contact-link"><span>(507) 319-7168</span></a>
+        <a href="mailto:info@mownurservices.com" class="menu-contact-link"><span>info@mownurservices.com</span></a>
+        <a href="https://www.facebook.com/MownurTaxServices" class="menu-contact-link" target="_blank" rel="noopener"><span>Facebook</span></a>
+        <a href="upload-documents.html" class="menu-contact-link"><span>Upload Documents</span></a>
+      </div>
+      <div class="menu-lang" role="group" aria-label="Language">
+        <button class="menu-lang-btn active" id="langEN" aria-pressed="true">EN</button>
+        <button class="menu-lang-btn" id="langSO" aria-pressed="false">SO</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav class="nav is-white" id="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-logo-wrap">
+    <svg class="nav-logo-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect class="nav-logo-rect" x="1"  y="1"  width="11" height="11" rx="1"/>
+      <rect class="nav-logo-rect" x="16" y="1"  width="11" height="11" rx="1" opacity="0.6"/>
+      <rect class="nav-logo-rect" x="1"  y="16" width="11" height="11" rx="1" opacity="0.4"/>
+      <rect class="nav-logo-rect" x="16" y="16" width="11" height="11" rx="1" opacity="0.8"/>
+    </svg>
+    <div class="nav-logo-text-stack">
+      <a href="index.html" class="nav-logo-name" aria-label="Mownur Tax Services home">
+        <span class="nav-logo-shift">Mownur Tax Services</span>
+      </a>
+      <div class="nav-lang" role="group" aria-label="Language">
+        <button class="nav-lang-btn active" id="navLangEN" aria-pressed="true">English</button>
+        <span class="nav-lang-sep" aria-hidden="true">/</span>
+        <button class="nav-lang-btn" id="navLangSO" aria-pressed="false">Somali</button>
+      </div>
+    </div>
+  </div>
+  <button class="nav-burger" id="navBurger" aria-label="Open menu" aria-expanded="false">
+    <span class="nav-burger-line"></span>
+    <span class="nav-burger-line"></span>
+    <span class="nav-burger-line"></span>
+  </button>
+</nav>
+
+<div id="mainWrapper">
+<!-- ── HERO ── -->
+<section class="hero" data-nav="is-white" aria-label="Hero">
+  <!-- Animated cubes -->
+  <div class="hero-cubes" aria-hidden="true">
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <p class="hero-label">Rochester Tax Professionals</p>
+      <h1 class="hero-h1">
+        <span class="hero-h1-line"><span class="hero-h1-inner">Your Taxes</span></span>
+        <span class="hero-h1-line"><span class="hero-h1-inner">Done Right</span></span>
+        <span class="hero-h1-line"><span class="hero-h1-inner">the First Time.</span></span>
+      </h1>
+      <div class="hero-actions">
+        <a href="tel:+15073197168" class="hero-cta">
+          Call Now <span class="hero-cta-arrow">↗</span>
+        </a>
+        <a href="#services" class="hero-cta-ghost">
+          Our Services →
+        </a>
+      </div>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-tabs" id="heroTabs">
+        <!-- Pane 1 -->
+        <div class="hero-tab-pane active">
+          <div class="htab-hl"><span class="htab-hl-inner">Est. 2012</span></div>
+          <p class="htab-text">A Rochester tax firm serving the community since 2012 — personal and business taxes, ITIN applications, EIN processing, and company registration.</p>
+        </div>
+        <!-- Pane 2 -->
+        <div class="hero-tab-pane">
+          <div class="htab-hl"><span class="htab-hl-inner">7 Services</span></div>
+          <p class="htab-text">From tax preparation to EIN processing and company registration — everything under one roof.</p>
+        </div>
+        <!-- Pane 3 -->
+        <div class="hero-tab-pane">
+          <div class="htab-hl"><span class="htab-hl-inner">Rochester</span></div>
+          <p class="htab-text">Located at 1207 7th St NW #3 — book your appointment online and skip the wait.</p>
+        </div>
+        <!-- Pane 4 -->
+        <div class="hero-tab-pane">
+          <div class="htab-hl"><span class="htab-hl-inner">EN · SO</span></div>
+          <p class="htab-text">Bilingual service in English and Somali — we speak your language and understand your needs.</p>
+        </div>
+        <!-- Pane 5 -->
+        <div class="hero-tab-pane">
+          <div class="htab-hl"><span class="htab-hl-inner">Book Online</span></div>
+          <p class="htab-text">Choose your time, pick your service, and secure your spot — open 24 hours, every day.</p>
+        </div>
+        <!-- Pane 6 -->
+        <div class="hero-tab-pane">
+          <div class="htab-hl"><span class="htab-hl-inner">IRS Ready</span></div>
+          <p class="htab-text">Every return is IRS-compliant, error-free, and filed correctly the first time — guaranteed.</p>
+        </div>
+      </div>
+      <div class="hero-tab-indicators" role="tablist" aria-label="Hero stats">
+        <button class="htab-dot active" aria-label="Stat 1" role="tab"></button>
+        <button class="htab-dot" aria-label="Stat 2" role="tab"></button>
+        <button class="htab-dot" aria-label="Stat 3" role="tab"></button>
+        <button class="htab-dot" aria-label="Stat 4" role="tab"></button>
+        <button class="htab-dot" aria-label="Stat 5" role="tab"></button>
+        <button class="htab-dot" aria-label="Stat 6" role="tab"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-scroll-row" aria-hidden="true">
+    <span class="hero-scroll-label">Scroll to explore</span>
+    <div class="hero-scroll-line"></div>
+    <span class="hero-location">Rochester, MN · 55901</span>
+  </div>
+</section>
+
+<!-- ── HOW TO FILE ── -->
+<section class="how-to-file" id="file-online">
+  <div class="how-to-file-header">
+    <p class="htf-label">How to File</p>
+    <h2 class="htf-title">Your Return,<br>Your Way.</h2>
+    <p class="htf-intro">A tax professional reviews your file, contacts you when needed, and files your taxes — no stress, no surprises.</p>
+  </div>
+  <div class="htf-btn-row">
+    <a href="portal.html#status" class="htf-btn htf-btn--outline">Check My Return</a>
+    <a href="portal.html" class="htf-btn htf-btn--solid">Get Started Online →</a>
+  </div>
+</section>
+
+<!-- ── THESIS ── -->
+<section class="thesis" aria-labelledby="thesis-head">
+  <div class="thesis-bg" aria-hidden="true"></div>
+  <div class="thesis-inner">
+    <p class="thesis-eyebrow rv">Our Promise</p>
+    <p class="thesis-body rv" id="thesis-head">
+      Professional tax preparation should be accessible to everyone, regardless of background or immigration status. Mownur Tax Services makes preparing your taxes fast, accurate, and error-free — every time.
+    </p>
+  </div>
+</section>
+
+<!-- ── STATS ── -->
+<section class="stats-section" aria-label="Key numbers">
+  <div class="stats-row rv" id="statsRow1">
+    <div class="stat-block">
+      <div class="stat-num" data-count="12" data-suffix="+">12+</div>
+      <div class="stat-label">Years in Rochester</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num" data-count="500" data-suffix="+">500+</div>
+      <div class="stat-label">Clients Served</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num" data-count="7">7</div>
+      <div class="stat-label">Services Offered</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">MN</div>
+      <div class="stat-label">Licensed in Minnesota</div>
+    </div>
+  </div>
+  <div class="stats-row rv" style="transition-delay:.1s" id="statsRow2">
+    <div class="stat-block">
+      <div class="stat-num">EN·SO</div>
+      <div class="stat-label">Bilingual Service</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">IRS Compliant</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Errors, Guaranteed</div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num" style="font-size:clamp(1.4rem,2vw,2rem);letter-spacing:-.02em">Book<br>Online</div>
+      <div class="stat-label">Appointments</div>
+    </div>
+  </div>
+</section>
+
+<!-- ── VALUES ── -->
+<section class="values" aria-labelledby="values-head">
+  <div class="values-header">
+    <div>
+      <p class="section-label rv">How We Work</p>
+      <h2 class="section-title rv" id="values-head" style="transition-delay:.08s">Our Core<br>Commitments</h2>
+    </div>
+    <p class="values-intro rv" style="transition-delay:.12s">Every client who walks through our door receives the same care and attention we'd give our own family. These are the principles we work by.</p>
+  </div>
+  <ul class="values-list" role="list" id="valuesList">
+    <li class="values-item rv" style="transition-delay:.04s">
+      <span class="val-num">01</span>
+      <span class="val-name">Personalized Attention</span>
+      <span class="val-desc">Each person, family, or business owner receives individualized service — we understand your unique needs.</span>
+    </li>
+    <li class="values-item rv" style="transition-delay:.08s">
+      <span class="val-num">02</span>
+      <span class="val-name">Error-Free Returns</span>
+      <span class="val-desc">Our main goal is to make each tax return error-free, applying every credit and deduction you're entitled to.</span>
+    </li>
+    <li class="values-item rv" style="transition-delay:.12s">
+      <span class="val-num">03</span>
+      <span class="val-name">IRS Compliance</span>
+      <span class="val-desc">We master IRS publications to ensure every return is filed correctly and fully compliant.</span>
+    </li>
+    <li class="values-item rv" style="transition-delay:.16s">
+      <span class="val-num">04</span>
+      <span class="val-name">Bilingual Service</span>
+      <span class="val-desc">We serve clients in English and Somali — no language barrier stands between you and your refund.</span>
+    </li>
+    <li class="values-item rv" style="transition-delay:.20s">
+      <span class="val-num">05</span>
+      <span class="val-name">Secure Information</span>
+      <span class="val-desc">Your personal and financial information is always safe and protected with us.</span>
+    </li>
+    <li class="values-item rv" style="transition-delay:.24s">
+      <span class="val-num">06</span>
+      <span class="val-name">Easy Scheduling</span>
+      <span class="val-desc">Book your appointment online in minutes. Choose your service, pick a time, and we'll be ready when you arrive.</span>
+    </li>
+    <li class="values-item rv" style="transition-delay:.28s">
+      <span class="val-num">07</span>
+      <span class="val-name">Fast &amp; Easy Filing</span>
+      <span class="val-desc">We make the entire process simple — from gathering documents to submitting your return in record time.</span>
+    </li>
+  </ul>
+</section>
+
+<!-- ── SERVICES CAROUSEL ── -->
+<section class="services-section" id="services" aria-labelledby="svc-head" data-nav="is-white">
+  <div class="services-head">
+    <div>
+      <p class="section-label-light rv">What We Do</p>
+      <h2 class="section-title-light rv" id="svc-head" style="transition-delay:.08s">Expert Tax &amp;<br>Financial Services</h2>
+    </div>
+    <p class="services-desc rv" style="transition-delay:.12s">From individual returns to business filings — every service you need, in one place, handled by professionals who care.</p>
+  </div>
+  <div class="svc-carousel-wrap">
+    <div class="svc-carousel" id="svcCarousel" role="list">
+      <div class="svc-card rv" role="listitem" style="transition-delay:.04s">
+        <span class="svc-card-num">01</span>
+        <div class="svc-card-name">Tax Preparation</div>
+        <p class="svc-card-desc">Fast, accurate state and federal filing for individuals and businesses in Minnesota. We handle the complexity — you get the refund.</p>
+        <a href="rochester-tax-preperation.html" class="svc-card-link">Learn more <span class="svc-card-arrow">↗</span></a>
+      </div>
+      <div class="svc-card rv" role="listitem" style="transition-delay:.08s">
+        <span class="svc-card-num">02</span>
+        <div class="svc-card-name">ITIN Application</div>
+        <p class="svc-card-desc">We determine if you need an Individual Taxpayer Identification Number and walk you through the entire application process.</p>
+        <a href="rochester-itin-application.html" class="svc-card-link">Learn more <span class="svc-card-arrow">↗</span></a>
+      </div>
+      <div class="svc-card rv" role="listitem" style="transition-delay:.12s">
+        <span class="svc-card-num">03</span>
+        <div class="svc-card-name">Tax Resources</div>
+        <p class="svc-card-desc">IRS forms, refund trackers, Minnesota DOR links, and guides — everything you need in one place to stay informed and prepared.</p>
+        <a href="rochester-tax-resources.html" class="svc-card-link">Learn more <span class="svc-card-arrow">↗</span></a>
+      </div>
+      <div class="svc-card rv" role="listitem" style="transition-delay:.16s">
+        <span class="svc-card-num">04</span>
+        <div class="svc-card-name">EIN Process</div>
+        <p class="svc-card-desc">An EIN is a nine-digit IRS number required for most businesses. We guide you through obtaining yours quickly and correctly.</p>
+        <a href="rochester-ein.html" class="svc-card-link">Learn more <span class="svc-card-arrow">↗</span></a>
+      </div>
+      <div class="svc-card rv" role="listitem" style="transition-delay:.20s">
+        <span class="svc-card-num">05</span>
+        <div class="svc-card-name">Company Registration</div>
+        <p class="svc-card-desc">Starting a business? We provide expert advice on registering your company and getting your operations set up the right way.</p>
+        <a href="rochester-registration-company.html" class="svc-card-link">Learn more <span class="svc-card-arrow">↗</span></a>
+      </div>
+      <div class="svc-card rv" role="listitem" style="transition-delay:.24s">
+        <span class="svc-card-num">06</span>
+        <div class="svc-card-name">Tax Resources</div>
+        <p class="svc-card-desc">Tax forms, IRS publications, refund calculators, amendment guides — our resources hub has everything you need in one place.</p>
+        <a href="rochester-tax-resources.html" class="svc-card-link">Explore resources <span class="svc-card-arrow">↗</span></a>
+      </div>
+      <div class="svc-card rv" role="listitem" style="transition-delay:.28s">
+        <span class="svc-card-num">07</span>
+        <div class="svc-card-name">Check My Refund</div>
+        <p class="svc-card-desc">All done with your taxes? Track your state and federal refund progress in real time with our helpful refund links.</p>
+        <a href="mn-tax-help-check-my-refund.html" class="svc-card-link">Check status <span class="svc-card-arrow">↗</span></a>
+      </div>
+    </div>
+  </div>
+  <div class="carousel-nav rv">
+    <button class="carousel-btn" id="carouselPrev" aria-label="Previous">←</button>
+    <button class="carousel-btn" id="carouselNext" aria-label="Next">→</button>
+    <div class="carousel-progress" aria-hidden="true">
+      <div class="carousel-progress-fill" id="carouselFill"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── STORY / ABOUT ── -->
+<section class="story" id="about" aria-label="About Mownur Tax Services">
+  <div class="story-left rv">
+    <div class="story-img-wrap">
+      <div class="story-img-inner" id="storyImgInner">
+        <img src="https://placehold.co/480x600/13263a/7dabdd?text=Mownur+Tax+Services" alt="Mownur Tax Services Rochester office" loading="eager" />
+      </div>
+      <span class="story-img-label">Est. 2012 · Rochester, MN</span>
+    </div>
+    <div class="story-meta">
+      <div class="story-meta-item">
+        <div class="story-meta-label">Founded</div>
+        <div class="story-meta-val">2012</div>
+      </div>
+      <div class="story-meta-item">
+        <div class="story-meta-label">Location</div>
+        <div class="story-meta-val">7th St NW</div>
+      </div>
+      <div class="story-meta-item">
+        <div class="story-meta-label">Appointments</div>
+        <div class="story-meta-val">Online</div>
+      </div>
+    </div>
+  </div>
+  <div class="story-right">
+    <p class="section-label rv">Our Story</p>
+    <h2 class="section-title rv" style="transition-delay:.08s">Serving Rochester<br>Since 2012</h2>
+    <p class="story-body rv" style="transition-delay:.14s">
+      <strong>Mownur Tax Services was founded in Rochester</strong> with a singular mission: make professional tax preparation accessible to everyone, regardless of background or immigration status.
+      <br><br>
+      We specialize in the preparation of personal and business taxes. We assist with ITIN number processing, EIN applications, and provide expert advice for company registration. We understand the needs of our clients — each person, family, or business owner receives personalized attention.
+      <br><br>
+      When completing a tax return it is necessary to master the publications stipulated by the Internal Revenue Service. Mownur Tax Services makes sure to apply credits and deductions correctly. <strong>Our main goal is to make each tax return error-free.</strong>
+    </p>
+    <blockquote class="story-pull rv" style="transition-delay:.2s">
+      "We understand the needs of our clients. Each person, family or business owner receives personalized attention."
+    </blockquote>
+    <a href="#contact" class="story-cta rv" style="transition-delay:.26s">
+      Get in touch ↗
+    </a>
+  </div>
+</section>
+
+<!-- ── TEAM ── -->
+<section class="team-section" id="team" aria-label="Our team">
+  <!-- Hidden SVG clip mask definitions (CMCC-style polygon photo mask) -->
+  <svg class="people-svg-defs" aria-hidden="true">
+    <defs>
+      <clipPath id="people-mask" clipPathUnits="objectBoundingBox">
+        <polygon points="0,0 1,0 1,0.92 0.85,1 0,1"/>
+      </clipPath>
+    </defs>
+  </svg>
+
+  <div class="team-layout">
+    <div class="team-left">
+      <p class="section-label rv">The Founder</p>
+      <h2 class="section-title rv" style="transition-delay:.08s">Built on Trust &amp;<br>Expertise.</h2>
+      <p class="team-intro rv" style="transition-delay:.14s;margin-top:2rem">Mohamud Nur has been personally helping Rochester families and businesses navigate taxes since 2012. Every client gets the same dedicated, one-on-one care — directly from the founder.</p>
+    </div>
+    <div class="team-right">
+  <div class="people-grid" style="grid-template-columns:1fr;max-width:420px;">
+    <div class="person-item rv" style="transition-delay:.04s">
+      <div class="person-photo-wrap">
+        <img src="https://placehold.co/480x640/13263a/7dabdd?text=Mohamud+Nur" alt="Mohamud Nur — Founder &amp; Lead Tax Preparer" loading="eager" />
+        <div class="person-text">
+          <div class="person-name">Mohamud Nur</div>
+          <div class="person-title">Founder &amp; Lead Tax Preparer</div>
+        </div>
+      </div>
+    </div>
+  </div>
+    </div><!-- /.team-right -->
+  </div><!-- /.team-layout -->
+</section>
+
+<!-- ── TIMELINE / MILESTONES ── -->
+<section class="roadmap-section" data-nav="is-white" aria-label="Our history">
+  <div class="roadmap-line" aria-hidden="true">
+    <div class="roadmap-line-fill" id="roadmapFill"></div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:start;">
+    <div>
+      <p class="section-label-light rv">Our Journey</p>
+      <h2 class="section-title-light rv" style="transition-delay:.08s;max-width:14ch;">A Decade of Serving Rochester.</h2>
+      <p class="rv" style="transition-delay:.14s;font-size:.95rem;line-height:1.75;color:rgba(249,251,253,0.5);max-width:38ch;margin-top:1.5rem;">From a small office on 7th St NW to one of Rochester's most trusted tax firms — here's how we got here.</p>
+    </div>
+    <div class="roadmap-inner">
+      <div class="roadmap-items" id="roadmapItems">
+        <div class="roadmap-item">
+          <div class="roadmap-year">2012</div>
+          <div class="roadmap-heading">Founded on 7th St NW</div>
+          <div class="roadmap-body">Opened our doors at 1207 7th St NW #3 — with a commitment to serve every Rochester family with accuracy and care.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-year">2014</div>
+          <div class="roadmap-heading">Bilingual Services Launched</div>
+          <div class="roadmap-body">Introduced full Somali-language tax services, breaking language barriers for the East African community in Rochester.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-year">2016</div>
+          <div class="roadmap-heading">Business &amp; EIN Services Added</div>
+          <div class="roadmap-body">Expanded beyond personal returns to include EIN processing, company registration, and full business tax support.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-year">2018</div>
+          <div class="roadmap-heading">ITIN Specialist Designation</div>
+          <div class="roadmap-body">Became a certified ITIN acceptance agent — helping undocumented and immigrant clients access tax filings legally.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-year">2020</div>
+          <div class="roadmap-heading">500+ Clients Served</div>
+          <div class="roadmap-body">Reached a landmark milestone — 500 families and businesses helped with their taxes, not a single IRS audit flagged.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-year">2024</div>
+          <div class="roadmap-heading">Online Appointment Booking</div>
+          <div class="roadmap-body">Launched our online booking system so clients can schedule appointments anytime — no phone call required.</div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-year">Today</div>
+          <div class="roadmap-heading">Mownur Tax Services</div>
+          <div class="roadmap-body">Rebranded as Mownur Tax Services — the same trusted founder, same address, same commitment to every single client.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIAL ── -->
+<section class="testimonial" data-nav="is-white" aria-label="Client testimonial">
+  <div class="t-inner">
+    <div class="t-stars rv" aria-label="5 stars">★★★★★</div>
+    <blockquote class="t-quote rv" style="transition-delay:.1s">
+      "I have years doing my taxes at Mownur Tax Services and the service is always friendly. I like them because they always prepare my taxes correctly and I know that my information is safe and protected. I recommend them 100%."
+    </blockquote>
+    <p class="t-attribution rv" style="transition-delay:.18s">
+      <strong>Jorge J.</strong> · Google Reviews · Rochester
+    </p>
+    <div class="t-links rv" style="transition-delay:.24s">
+      <a href="https://www.google.com/search?q=Mownur+Tax+Services+Rochester+MN" class="t-link" target="_blank" rel="noopener">View All Reviews ↗</a>
+      <a href="https://www.google.com/search?q=Mownur+Tax+Services+Rochester+MN#lrd=0x87f62807576aef5f:0x8136ac0e0fa45354,3,,," class="t-link" target="_blank" rel="noopener">Write a Review ↗</a>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section class="contact" id="contact" aria-label="Contact Mownur Tax Services">
+  <div class="contact-grid">
+    <div class="contact-left">
+      <p class="section-label rv">Next Up</p>
+      <h2 class="contact-cta-head split-text">Ready to File? Book Your Spot.</h2>
+      <p class="contact-cta-sub rv" style="transition-delay:.14s">Schedule your appointment online — pick your service, choose a time, and Mohamud will be ready for you. Fast, accurate, and stress-free.</p>
+      <a href="book-appointment.html" class="contact-btn rv" style="transition-delay:.20s">
+        <span class="btn-sweep" aria-hidden="true"></span>
+        <span class="btn-content">Book an Appointment <span class="btn-arrow">↗</span></span>
+      </a>
+    </div>
+    <div class="contact-right">
+      <div class="contact-info-block rv">
+        <div class="ci-label">Address</div>
+        <div class="ci-value">
+          <a href="https://www.google.com/maps/dir//1207+7th+St+NW+%233,+Rochester,+MN+55901" target="_blank" rel="noopener">
+            1207 7th St NW #3<br>Rochester, MN 55901
+          </a>
+        </div>
+      </div>
+      <div class="contact-info-block rv" style="transition-delay:.06s">
+        <div class="ci-label">Phone &amp; Email</div>
+        <div class="ci-value">
+          <a href="tel:+15073197168">(507) 319-7168</a><br>
+          <a href="mailto:info@mownurservices.com">info@mownurservices.com</a>
+        </div>
+      </div>
+      <div class="contact-info-block rv" style="transition-delay:.12s">
+        <div class="ci-label">Business Hours</div>
+        <div class="ci-value">
+          <div class="hours-table">
+            <span class="h-day">Mon – Sun</span><span class="h-time">Open 24 Hours</span>
+            
+            
+          </div>
+          <a href="book-appointment.html" style="display:inline-block;margin-top:.75rem;font-size:.82rem;color:var(--dark);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(19,38,58,0.3);">Book an Appointment ↗</a>
+        </div>
+      </div>
+      <div class="contact-action-links rv" style="transition-delay:.18s">
+        <a href="https://www.google.com/maps/dir//1207+7th+St+NW+%233,+Rochester,+MN+55901" class="ca-link" target="_blank" rel="noopener">
+          Get Directions <span>↗</span>
+        </a>
+        <a href="book-appointment.html" class="ca-link">
+          Book an Appointment <span>↗</span>
+        </a>
+        <a href="upload-documents.html" class="ca-link">
+          Upload Documents <span>↗</span>
+        </a>
+        <a href="https://www.google.com/search?q=Mownur+Tax+Services+Rochester+MN#lrd=0x87f62807576aef5f:0x8136ac0e0fa45354,1,,," class="ca-link" target="_blank" rel="noopener">
+          View Our Reviews <span>↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer aria-label="Site footer">
+  <div class="footer-bg-blocks" aria-hidden="true">
+    <div class="fbg" style="width:120px;height:120px;top:15%;left:8%;opacity:.4;"></div>
+    <div class="fbg" style="width:60px;height:60px;top:55%;left:20%;opacity:.25;"></div>
+    <div class="fbg" style="width:200px;height:200px;top:10%;right:10%;opacity:.18;"></div>
+    <div class="fbg" style="width:80px;height:80px;top:65%;right:25%;opacity:.3;"></div>
+    <div class="fbg" style="width:40px;height:40px;top:40%;left:50%;opacity:.2;"></div>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a href="index.html" class="footer-logo" aria-label="Mownur Tax Services home">Mownur<span>.</span></a>
+      </div>
+      <div class="footer-nav-cols">
+        <div class="footer-nav-group">
+          <div class="footer-nav-title">Services</div>
+          <ul class="footer-nav-links" role="list">
+            <li><a href="rochester-tax-preperation.html" class="footer-nav-link">Tax Preparation</a></li>
+            <li><a href="rochester-itin-application.html" class="footer-nav-link">ITIN Application</a></li>
+            <li><a href="rochester-ein.html" class="footer-nav-link">EIN Process</a></li>
+            <li><a href="rochester-registration-company.html" class="footer-nav-link">Company Registration</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-group">
+          <div class="footer-nav-title">Resources</div>
+          <ul class="footer-nav-links" role="list">
+            <li><a href="rochester-tax-resources.html" class="footer-nav-link">Tax Resources</a></li>
+            <li><a href="mn-tax-help-check-my-refund.html" class="footer-nav-link">Check My Refund</a></li>
+            <li><a href="faq.html" class="footer-nav-link">FAQ</a></li>
+            <li><a href="blog.html" class="footer-nav-link">Tax Blog</a></li>
+            <li><a href="upload-documents.html" class="footer-nav-link">Upload Documents</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-group">
+          <div class="footer-nav-title">Company</div>
+          <ul class="footer-nav-links" role="list">
+            <li><a href="#about" class="footer-nav-link">About Us</a></li>
+            <li><a href="#contact" class="footer-nav-link">Contact</a></li>
+            <li><a href="reviews.html" class="footer-nav-link">Reviews</a></li>
+            <li><a href="privacy-policy.html" class="footer-nav-link">Privacy Policy</a></li>
+            <li><a href="terms-of-service.html" class="footer-nav-link">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-contact-item">
+          <div class="footer-contact-label">Phone</div>
+          <a href="tel:+15073197168" class="footer-contact-val">(507) 319-7168</a>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-label">Address</div>
+          <a href="https://www.google.com/maps/dir//1207+7th+St+NW+%233,+Rochester,+MN+55901" class="footer-contact-val" target="_blank" rel="noopener">1207 7th St NW #3<br>Rochester, MN 55901</a>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-label">Hours</div>
+          <div class="footer-contact-val" style="cursor:default;">Open 24 Hours</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© <span id="yr"></span> Mownur Tax Services · Rochester, MN</p>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/MownurTaxServices" class="footer-social-link" target="_blank" rel="noopener">Facebook</a>
+        <a href="upload-documents.html" class="footer-social-link">Upload Docs</a>
+      </div>
+      <a href="#" class="footer-backtop" aria-label="Back to top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+</div><!-- /#mainWrapper -->
+
+<script>
+/* ── CURSOR ── */
+const cur=document.getElementById('cur'), ring=document.getElementById('cur-ring');
+let mx=window.innerWidth/2, my=window.innerHeight/2, rx=mx, ry=my;
+
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; });
+
+// Hide when mouse leaves window, show when it returns
+document.addEventListener('mouseleave',()=>document.body.classList.add('cur-hidden'));
+document.addEventListener('mouseenter',()=>document.body.classList.remove('cur-hidden'));
+
+// Smooth ring follow
+(function tick(){
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+
+// Event delegation — works for ALL interactive elements including dynamically added ones
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button,[role="tab"],[role="button"],[tabindex]')){
+    document.body.classList.add('cur-hover');
+  }
+});
+document.addEventListener('mouseout',e=>{
+  if(e.target.closest('a,button,[role="tab"],[role="button"],[tabindex]')){
+    document.body.classList.remove('cur-hover');
+  }
+});
+
+/* ── NAV ── */
+const nav=document.getElementById('nav');
+const burger=document.getElementById('navBurger');
+const menu=document.getElementById('menuOverlay');
+let menuOpen=false;
+
+const mainWrapper=document.getElementById('mainWrapper');
+const backdrop=document.getElementById('menuBackdrop');
+
+function openMenu(){
+  menuOpen=true;
+  nav.classList.add('is-open');
+  menu.classList.add('is-open');
+  backdrop.classList.add('is-visible');
+  burger.setAttribute('aria-expanded','true');
+  document.body.style.overflow='hidden';
+  mainWrapper.classList.add('is-blur');
+}
+function closeMenu(){
+  menuOpen=false;
+  nav.classList.remove('is-open');
+  menu.classList.remove('is-open');
+  backdrop.classList.remove('is-visible');
+  burger.setAttribute('aria-expanded','false');
+  document.body.style.overflow='';
+  mainWrapper.classList.remove('is-blur');
+}
+burger.addEventListener('click',()=>{ menuOpen ? closeMenu() : openMenu(); });
+backdrop.addEventListener('click', closeMenu);
+menu.querySelectorAll('a').forEach(a=>a.addEventListener('click', closeMenu));
+
+/* nav scroll state */
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('is-scrolled', window.scrollY > 40);
+}, {passive:true});
+
+/* nav color — check which section contains the nav midpoint */
+const navSections = [...document.querySelectorAll('[data-nav]')];
+function updateNavColor(){
+  const navMid = nav.getBoundingClientRect().bottom;
+  let active = null;
+  for(const s of navSections){
+    const r = s.getBoundingClientRect();
+    if(r.top <= navMid && r.bottom >= navMid){ active = s; break; }
+  }
+  if(active){
+    nav.classList.toggle('is-white', active.dataset.nav === 'is-white');
+  }
+}
+window.addEventListener('scroll', updateNavColor, {passive:true});
+updateNavColor();
+
+/* ── HERO TABS ── */
+const panes=document.querySelectorAll('.hero-tab-pane');
+const dots=document.querySelectorAll('.htab-dot');
+let tabIdx=0, tabTimer;
+
+function setTab(i){
+  panes[tabIdx].classList.remove('active');
+  dots[tabIdx].classList.remove('active');
+  tabIdx=i%panes.length;
+  panes[tabIdx].classList.add('active');
+  dots[tabIdx].classList.add('active');
+}
+function nextTab(){ setTab(tabIdx+1); }
+
+tabTimer=setInterval(nextTab,5000);
+dots.forEach((d,i)=>d.addEventListener('click',()=>{ clearInterval(tabTimer); setTab(i); tabTimer=setInterval(nextTab,5000); }));
+
+/* ── SCROLL REVEALS ── */
+const ro=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); ro.unobserve(e.target); } });
+},{threshold:0.08, rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+setTimeout(()=>document.querySelectorAll('.rv:not(.in)').forEach(el=>el.classList.add('in')),3500);
+
+/* ── VALUES SCROLL ACTIVATION ── */
+const valItems=document.querySelectorAll('.values-item');
+const valObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      valItems.forEach(v=>v.classList.remove('active'));
+      e.target.classList.add('active');
+    }
+  });
+},{threshold:0.5, rootMargin:'-20% 0px -20% 0px'});
+valItems.forEach(v=>valObs.observe(v));
+if(valItems.length) valItems[0].classList.add('active');
+
+/* ── COUNTER ANIMATION ── */
+function animCount(el,target,suf){
+  let s=0,dur=1800;
+  const step=ts=>{
+    if(!s)s=ts;
+    const p=Math.min((ts-s)/dur,1);
+    const e=1-Math.pow(1-p,3);
+    el.textContent=Math.floor(e*target)+suf;
+    if(p<1)requestAnimationFrame(step);
+    else el.textContent=target+suf;
+  };
+  requestAnimationFrame(step);
+}
+const cntObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      const el=e.target,t=parseInt(el.dataset.count),s=el.dataset.suffix||'';
+      if(!isNaN(t))animCount(el,t,s);
+      cntObs.unobserve(el);
+    }
+  });
+},{threshold:0.5});
+document.querySelectorAll('[data-count]').forEach(el=>cntObs.observe(el));
+
+/* ── PARALLAX STAT ROWS ── */
+/* Mirrors GSAP ScrollTrigger scrub:1
+   Row 1: xPercent 25→0, Row 2: xPercent -25→0
+   Only active ≥768px */
+const row1=document.getElementById('statsRow1');
+const row2=document.getElementById('statsRow2');
+function parallaxStats(){
+  if(!row1||!row2) return;
+  if(window.innerWidth < 768){
+    row1.style.transform=''; row2.style.transform=''; return;
+  }
+  const section=row1.closest('.stats-section');
+  if(!section) return;
+  const rect=section.getBoundingClientRect();
+  const vh=window.innerHeight;
+  // progress: 0 when section enters viewport bottom, 1 when it leaves top
+  const progress=Math.max(0,Math.min(1,(vh - rect.top) / (vh + rect.height)));
+  // xPercent 25→0 means starts offset right by 25%, lands at 0
+  // xPercent -25→0 means starts offset left by 25%, lands at 0
+  const x1=25 - progress*25;   // 25→0
+  const x2=-25 + progress*25;  // -25→0
+  row1.style.transform=`translateX(${x1}%)`;
+  row2.style.transform=`translateX(${x2}%)`;
+}
+window.addEventListener('scroll',parallaxStats,{passive:true});
+window.addEventListener('resize',parallaxStats,{passive:true});
+
+/* ── SERVICE CAROUSEL ── */
+const carousel=document.getElementById('svcCarousel');
+const prevBtn=document.getElementById('carouselPrev');
+const nextBtn=document.getElementById('carouselNext');
+const fill=document.getElementById('carouselFill');
+
+function updateCarouselProgress(){
+  const max=carousel.scrollWidth-carousel.clientWidth;
+  const pct=max>0?(carousel.scrollLeft/max)*100:0;
+  if(fill) fill.style.width=pct+'%';
+}
+function scrollCarousel(dir){
+  const card=carousel.querySelector('.svc-card');
+  const w=card?(card.offsetWidth+24):320;
+  carousel.scrollBy({left:dir*w,behavior:'smooth'});
+}
+prevBtn?.addEventListener('click',()=>scrollCarousel(-1));
+nextBtn?.addEventListener('click',()=>scrollCarousel(1));
+carousel?.addEventListener('scroll',updateCarouselProgress,{passive:true});
+updateCarouselProgress();
+
+/* drag to scroll — angle threshold 15° desktop, 30° tablet (≤768px) like CMCC Splide */
+let isDragging=false,startX=0,startY=0,scrollStart=0,dragLocked=false;
+const dragAngleThreshold=()=>window.innerWidth<=768?30:15;
+carousel?.addEventListener('mousedown',e=>{
+  isDragging=true; dragLocked=false;
+  startX=e.pageX; startY=e.pageY; scrollStart=carousel.scrollLeft;
+  carousel.classList.add('dragging');
+});
+document.addEventListener('mousemove',e=>{
+  if(!isDragging) return;
+  const dx=e.pageX-startX, dy=e.pageY-startY;
+  if(!dragLocked){
+    const angle=Math.abs(Math.atan2(dy,dx)*180/Math.PI);
+    // If angle from horizontal exceeds threshold, cancel drag (vertical scroll intent)
+    if(angle>dragAngleThreshold()){ isDragging=false; carousel.classList.remove('dragging'); return; }
+    dragLocked=true;
+  }
+  e.preventDefault();
+  carousel.scrollLeft=scrollStart-dx;
+});
+document.addEventListener('mouseup',()=>{isDragging=false; dragLocked=false; carousel?.classList.remove('dragging');});
+/* touch support */
+carousel?.addEventListener('touchstart',e=>{startX=e.touches[0].pageX;startY=e.touches[0].pageY;scrollStart=carousel.scrollLeft;},{passive:true});
+carousel?.addEventListener('touchmove',e=>{
+  const dx=e.touches[0].pageX-startX, dy=e.touches[0].pageY-startY;
+  const angle=Math.abs(Math.atan2(dy,dx)*180/Math.PI);
+  if(angle>dragAngleThreshold()) return;
+  carousel.scrollLeft=scrollStart-dx;
+},{passive:true});
+
+/* ── LANG SWITCHER ── */
+function setLang(lang){
+  const isEN = lang === 'en';
+  ['langEN','navLangEN'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.toggle('active', isEN);
+    el.setAttribute('aria-pressed', isEN ? 'true' : 'false');
+  });
+  ['langSO','navLangSO'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(!el) return;
+    el.classList.toggle('active', !isEN);
+    el.setAttribute('aria-pressed', !isEN ? 'true' : 'false');
+  });
+  if(!isEN) window.location.href='index.html';
+}
+document.getElementById('langEN')?.addEventListener('click', ()=>setLang('en'));
+document.getElementById('langSO')?.addEventListener('click', ()=>setLang('so'));
+document.getElementById('navLangEN')?.addEventListener('click', ()=>setLang('en'));
+document.getElementById('navLangSO')?.addEventListener('click', ()=>setLang('so'));
+
+/* ── PAGE LINK TRANSITIONS ── */
+/* Exact CMCC sequence:
+   t=0    page-wipe width 0→100% over 600ms cubic-bezier(.58,0,.07,1)
+   t=0    mainWrapper opacity+translateX over 600ms cubic-bezier(.58,0,.07,1)
+   t=0    logo rects scale(0) over 300ms, stagger 0.05s each
+   t=0    nav name translateY(100px) over 600ms cubic-bezier(.58,0,.07,1)
+   t=0    nav burger lines fade+scale over 500ms
+   t=0    menu links translateY(101%) over 200ms (instant hide)
+   t=100  menu text (inner) opacity 0 over 200ms
+   t=200  menu clip-path wipe over 800ms cubic-bezier(.58,0,.07,1)
+   t=700  navigate
+*/
+document.querySelectorAll('a[href]:not([href^="#"]):not([href^="tel"]):not([href^="mailto"]):not([target="_blank"])').forEach(a=>{
+  a.addEventListener('click',e=>{
+    const href=a.getAttribute('href');
+    if(!href||href==='#') return;
+    e.preventDefault();
+    const wipe=document.getElementById('page-wipe');
+
+    // t=0 — page wipe bar
+    wipe.style.transition='width 600ms cubic-bezier(.58,0,.07,1)';
+    wipe.style.width='100%';
+
+    // t=0 — mainWrapper shift left + fade
+    mainWrapper.style.transition='opacity 600ms cubic-bezier(.58,0,.07,1), transform 600ms cubic-bezier(.58,0,.07,1)';
+    mainWrapper.style.opacity='0';
+    mainWrapper.style.transform='translateX(-6%)';
+
+    // t=0 — logo rects scale(0), stagger 0.05s
+    document.querySelectorAll('.nav-logo-rect').forEach((r,i)=>{
+      r.style.transition=`transform 300ms cubic-bezier(.58,0,.07,1) ${i*50}ms`;
+      r.style.transformOrigin='center';
+      r.style.transform='scale(0)';
+    });
+
+    // t=0 — nav name drops down
+    const nameShift=document.querySelector('.nav-logo-shift');
+    if(nameShift){
+      nameShift.style.transition='transform 600ms cubic-bezier(.58,0,.07,1)';
+      nameShift.style.transform='translateY(100px)';
+    }
+
+    // t=0 — burger lines fade
+    document.querySelectorAll('.nav-burger-line').forEach(l=>{
+      l.style.transition='opacity 500ms ease, transform 500ms cubic-bezier(.58,0,.07,1)';
+      l.style.opacity='0';
+      l.style.transform='scaleX(0)';
+    });
+
+    // t=0 — menu links instantly hide (200ms)
+    document.querySelectorAll('.menu-link-text').forEach(l=>{
+      l.style.transition='transform 200ms cubic-bezier(.58,0,.07,1)';
+      l.style.transform='translateY(101%)';
+    });
+
+    // t=100 — menu inner fades
+    setTimeout(()=>{
+      const inner=menu.querySelector('.menu-inner');
+      if(inner){ inner.style.transition='opacity 200ms ease'; inner.style.opacity='0'; }
+    },100);
+
+    // t=200 — menu wipe covers screen
+    setTimeout(()=>{
+      menu.style.transition='clip-path 800ms cubic-bezier(.58,0,.07,1)';
+      menu.style.clipPath='inset(0 0 0% 0)';
+    },200);
+
+    // t=700 — navigate
+    setTimeout(()=>{ window.location.href=href; },700);
+  });
+});
+
+/* ── SPLIT TEXT WORD REVEALS ── */
+function initSplitText(){
+  document.querySelectorAll('.split-text').forEach(el=>{
+    const text=el.textContent;
+    const words=text.split(/(\s+)/);
+    el.innerHTML='';
+    words.forEach((word,i)=>{
+      if(/^\s+$/.test(word)){ el.appendChild(document.createTextNode(word)); return; }
+      const wrap=document.createElement('span');
+      wrap.className='split-wrap';
+      const inner=document.createElement('span');
+      inner.className='split-word';
+      inner.textContent=word;
+      inner.style.transitionDelay=(i*0.05)+'s';
+      wrap.appendChild(inner);
+      el.appendChild(wrap);
+    });
+  });
+  const splitObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.querySelectorAll('.split-word').forEach(w=>w.classList.add('in'));
+        splitObs.unobserve(e.target);
+      }
+    });
+  },{threshold:0.15, rootMargin:'-20px 0px'});
+  document.querySelectorAll('.split-text').forEach(el=>splitObs.observe(el));
+}
+initSplitText();
+
+/* ── ROADMAP SCROLL ANIMATION ── */
+const roadmapItems=document.querySelectorAll('.roadmap-item');
+const roadmapFill=document.getElementById('roadmapFill');
+if(roadmapItems.length){
+  const rmObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+  },{threshold:0.3, rootMargin:'-40px 0px'});
+  roadmapItems.forEach((item,i)=>{
+    item.style.transitionDelay=(i*0.08)+'s';
+    rmObs.observe(item);
+  });
+  // Animate the vertical line fill as roadmap section scrolls
+  function updateRoadmapLine(){
+    const section=document.querySelector('.roadmap-section');
+    if(!section||!roadmapFill) return;
+    const rect=section.getBoundingClientRect();
+    const progress=Math.max(0,Math.min(1,(window.innerHeight-rect.top)/(rect.height+window.innerHeight)));
+    roadmapFill.style.height=(progress*100)+'%';
+  }
+  window.addEventListener('scroll',updateRoadmapLine,{passive:true});
+  updateRoadmapLine();
+}
+
+/* ── STORY IMAGE PARALLAX ── */
+const storyImg=document.getElementById('storyImgInner');
+function updateStoryParallax(){
+  if(!storyImg) return;
+  const wrap=storyImg.closest('.story-img-wrap');
+  if(!wrap) return;
+  const rect=wrap.getBoundingClientRect();
+  const centerY=rect.top+rect.height/2;
+  const viewCenter=window.innerHeight/2;
+  const offset=((centerY-viewCenter)/window.innerHeight)*20;
+  storyImg.style.transform=`translateY(${offset}%)`;
+}
+window.addEventListener('scroll',updateStoryParallax,{passive:true});
+updateStoryParallax();
+
+/* ── FOOTER BLOCKS — scroll-scrubbed random stagger ── */
+/* Mirrors GSAP: scrub:true, start:"top 90%", end:"top center",
+   stagger:{amount:0.3, from:"random"} */
+(function(){
+  const fbgs=[...document.querySelectorAll('.fbg')];
+  if(!fbgs.length) return;
+  const footer=document.querySelector('footer');
+  if(!footer) return;
+
+  // Assign each block a random normalised offset in [0, 0.3]
+  // so they animate in at different points within the scroll window
+  const offsets=fbgs.map(()=>Math.random()*0.3);
+
+  function updateFooterBlocks(){
+    const rect=footer.getBoundingClientRect();
+    const vh=window.innerHeight;
+    // progress: 0 when footer top hits 90% of viewport, 1 when it hits center
+    const raw=(vh*0.9 - rect.top) / (vh*0.9 - vh*0.5);
+    const progress=Math.max(0,Math.min(1,raw));
+
+    fbgs.forEach((fbg,i)=>{
+      // Each block has its own stagger offset — revealed as progress passes its threshold
+      const threshold=offsets[i];
+      const blockProgress=Math.max(0,Math.min(1,(progress-threshold)/(1-threshold)));
+      fbg.style.opacity=blockProgress;
+      fbg.style.transform=`translateY(${(1-blockProgress)*24}px) scale(${0.92+blockProgress*0.08})`;
+    });
+  }
+
+  // Set initial state
+  fbgs.forEach(fbg=>{
+    fbg.style.opacity='0';
+    fbg.style.transform='translateY(24px) scale(0.92)';
+    fbg.style.transition='none';
+  });
+
+  window.addEventListener('scroll',updateFooterBlocks,{passive:true});
+  updateFooterBlocks();
+})();
+
+/* ── FOOTER YEAR ── */
+document.getElementById('yr').textContent=new Date().getFullYear();
+</script>
+</body>
+</html>

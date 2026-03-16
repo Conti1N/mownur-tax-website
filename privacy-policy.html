@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — Mownur Tax Services Rochester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root{--dark:#13263a;--light:#f9fbfd;--accent:rgba(125,171,221,0.56);--accent-solid:#7dabdd;--gutter:2rem;--nav-h:72px;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}html{scroll-behavior:smooth;}
+    body{background:var(--light);color:var(--dark);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;cursor:none;overflow-x:hidden;}
+    ::selection{background:var(--dark);color:var(--light);}img{display:block;max-width:100%;}a{text-decoration:none;color:inherit;}
+    #cur{position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);background:#fff;mix-blend-mode:difference;transition:width 200ms cubic-bezier(.17,.84,.21,1),height 200ms cubic-bezier(.17,.84,.21,1),opacity 200ms ease;}
+    #cur-ring{position:fixed;top:0;left:0;width:36px;height:36px;border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);border:1.5px solid rgba(255,255,255,0.5);mix-blend-mode:difference;transition:width 350ms cubic-bezier(.17,.84,.21,1),height 350ms cubic-bezier(.17,.84,.21,1),opacity 350ms ease;}
+    body.cur-hover #cur{width:20px;height:20px;}body.cur-hover #cur-ring{width:56px;height:56px;}body.cur-hidden #cur,body.cur-hidden #cur-ring{opacity:0;}
+    .grain{position:fixed;inset:0;pointer-events:none;z-index:9000;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-repeat:repeat;background-size:128px 128px;}
+    .nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:var(--nav-h);display:flex;align-items:center;padding:0 var(--gutter);background:rgba(249,251,253,0.92);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(19,38,58,0.06);}
+    .nav-logo-wrap{flex:1;display:flex;align-items:center;gap:.75rem;font-family:'DM Serif Display',serif;font-size:1.15rem;letter-spacing:-.02em;color:var(--dark);}
+    .nav-logo-svg{width:28px;height:28px;flex-shrink:0;}.nav-logo-rect{fill:var(--dark);}
+    .nav-back{font-size:.72rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:rgba(19,38,58,0.45);display:flex;align-items:center;gap:.5rem;cursor:none;transition:color 200ms ease;}
+    .nav-back:hover{color:var(--dark);}.nav-back svg{width:14px;height:14px;}
+    .legal-hero{background:var(--dark);padding:calc(var(--nav-h) + 6rem) var(--gutter) 5rem;position:relative;overflow:hidden;}
+    .legal-hero-bg{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 60% 35%,rgba(125,171,221,0.1) 0%,transparent 60%);}
+    .legal-hero-inner{position:relative;z-index:1;max-width:780px;margin:0 auto;}
+    .legal-tag{font-size:.7rem;font-weight:500;letter-spacing:.16em;text-transform:uppercase;color:var(--accent-solid);display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;}
+    .legal-tag::before{content:'';display:block;width:2.5rem;height:1px;background:var(--accent-solid);}
+    .legal-h1{font-family:'DM Serif Display',serif;font-size:clamp(2.5rem,5vw,4.5rem);line-height:1.05;letter-spacing:-.04em;color:var(--light);margin-bottom:1.5rem;}
+    .legal-meta{font-size:.78rem;color:rgba(249,251,253,0.35);}
+    .legal-body{max-width:780px;margin:0 auto;padding:5rem var(--gutter) 7rem;}
+    .legal-body h2{font-family:'DM Serif Display',serif;font-size:1.65rem;letter-spacing:-.03em;color:var(--dark);margin:3rem 0 1rem;padding-top:.5rem;border-top:1px solid rgba(19,38,58,0.07);}
+    .legal-body h2:first-child{border-top:none;margin-top:0;}
+    .legal-body p{font-size:.95rem;line-height:1.8;color:rgba(19,38,58,0.7);margin-bottom:1.1rem;}
+    .legal-body strong{color:var(--dark);}
+    .legal-body a{color:var(--accent-solid);text-decoration:underline;text-underline-offset:3px;}
+    .legal-body ul{margin:.75rem 0 1.1rem 1.5rem;display:flex;flex-direction:column;gap:.5rem;}
+    .legal-body li{font-size:.95rem;line-height:1.7;color:rgba(19,38,58,0.7);}
+    footer{background:var(--dark);padding:5rem var(--gutter) 2.5rem;border-top:1px solid rgba(249,251,253,0.06);}
+    .footer-inner{max-width:1200px;margin:0 auto;}
+    .footer-top{display:grid;grid-template-columns:180px 1fr auto;gap:4rem;margin-bottom:4rem;align-items:start;}
+    @media(max-width:768px){.footer-top{grid-template-columns:1fr;gap:2.5rem;}}
+    .footer-logo{font-family:'DM Serif Display',serif;font-size:1.5rem;letter-spacing:-.02em;color:var(--light);}
+    .footer-logo span{color:var(--accent-solid);}
+    .footer-nav-cols{display:flex;gap:4rem;flex-wrap:wrap;}
+    .footer-nav-title{font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(249,251,253,0.3);margin-bottom:1rem;}
+    .footer-nav-links{list-style:none;display:flex;flex-direction:column;gap:.65rem;}
+    .footer-nav-link{font-size:.88rem;color:rgba(249,251,253,0.55);transition:color 200ms ease;}
+    .footer-nav-link:hover{color:#f7f7f8;}
+    .footer-contact-item{margin-bottom:1.25rem;}
+    .footer-contact-label{font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(249,251,253,0.3);margin-bottom:.35rem;}
+    .footer-contact-val{font-size:.9rem;color:rgba(249,251,253,0.6);transition:color 200ms ease;line-height:1.5;}
+    .footer-contact-val:hover{color:#f7f7f8;}
+    .footer-bottom{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;padding-top:2rem;border-top:1px solid rgba(249,251,253,0.06);}
+    .footer-copy{font-size:.78rem;color:rgba(249,251,253,0.25);}
+    .footer-social{display:flex;gap:1rem;}
+    .footer-social-link{font-size:.78rem;color:rgba(249,251,253,0.4);transition:color 200ms ease;}
+    .footer-social-link:hover{color:#f7f7f8;}
+    .footer-backtop{font-size:.78rem;color:rgba(249,251,253,0.35);transition:color 200ms ease;}
+    .footer-backtop:hover{color:var(--light);}
+  </style>
+</head>
+<body>
+<div id="cur"></div><div id="cur-ring"></div><div class="grain"></div>
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-logo-wrap">
+    <svg class="nav-logo-svg" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect class="nav-logo-rect" x="2" y="2" width="11" height="11"/><rect class="nav-logo-rect" x="15" y="2" width="11" height="11"/><rect class="nav-logo-rect" x="2" y="15" width="11" height="11"/><rect class="nav-logo-rect" x="15" y="15" width="11" height="11" opacity=".4"/></svg>
+    <a href="index.html" style="font-family:'DM Serif Display',serif;font-size:1.15rem;letter-spacing:-.02em;color:var(--dark);">Mownur Tax Services</a>
+  </div>
+  <a href="index.html" class="nav-back"><svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M9 2L4 7l5 5"/></svg>Back to home</a>
+</nav>
+
+<header class="legal-hero">
+  <div class="legal-hero-bg" aria-hidden="true"></div>
+  <div class="legal-hero-inner">
+    <p class="legal-tag">Legal</p>
+    <h1 class="legal-h1">Privacy Policy</h1>
+    <p class="legal-meta">Last updated: March 2025 · Mownur Tax Services LLC · Rochester, MN</p>
+  </div>
+</header>
+
+<div class="legal-body">
+  <h2>Overview</h2>
+  <p>Mownur Tax Services LLC ("Mownur Tax Services," "we," "our," or "us") is committed to protecting the privacy and security of your personal information. This Privacy Policy explains what information we collect, how we use it, and how we protect it when you use our website at mownurservices.com or engage our tax preparation and related services.</p>
+  <p>By using our website or services, you agree to the collection and use of information as described in this policy.</p>
+
+  <h2>Information We Collect</h2>
+  <p>We collect information you provide directly to us, including:</p>
+  <ul>
+    <li><strong>Identification information:</strong> First name, last name, date of birth</li>
+    <li><strong>Tax identification:</strong> Last four digits of your Social Security Number or ITIN (we never store full SSNs)</li>
+    <li><strong>Contact information:</strong> Email address, phone number, mailing address</li>
+    <li><strong>Financial information:</strong> Income documents (W-2s, 1099s), bank account information for direct deposit of refunds, business income and expense records</li>
+    <li><strong>Documents:</strong> Files you upload through our document portal</li>
+    <li><strong>Appointment information:</strong> Date, time, and type of service requested</li>
+  </ul>
+  <p>We also collect limited technical information automatically when you visit our website, such as your browser type, referring URL, and general location (city/region level only).</p>
+
+  <h2>How We Use Your Information</h2>
+  <p>We use your information to:</p>
+  <ul>
+    <li>Prepare and file your federal and state tax returns</li>
+    <li>Communicate with you about your return status, appointments, and account</li>
+    <li>Send you important tax deadline reminders and updates (you can opt out at any time)</li>
+    <li>Improve our services and website</li>
+    <li>Comply with applicable federal and state tax laws and regulations</li>
+  </ul>
+
+  <h2>How We Protect Your Information</h2>
+  <p>The security of your financial and personal data is our highest priority. We employ industry-standard safeguards including:</p>
+  <ul>
+    <li>Encryption of all data in transit (HTTPS/TLS) and at rest</li>
+    <li>Secure document storage using Microsoft OneDrive with access controls</li>
+    <li>Staff access limited strictly to what is required to perform their job functions</li>
+    <li>We never store full Social Security Numbers — only the last four digits for client identification</li>
+    <li>We never share your tax documents or return information with third parties for marketing purposes</li>
+  </ul>
+
+  <h2>Sharing of Information</h2>
+  <p>We do not sell, rent, or trade your personal information to third parties. We may share your information only in the following limited circumstances:</p>
+  <ul>
+    <li><strong>IRS and state tax authorities:</strong> When required to file your tax returns on your behalf with your consent</li>
+    <li><strong>Service providers:</strong> Third-party vendors that help us operate our business (document storage, appointment scheduling) under strict confidentiality agreements</li>
+    <li><strong>Legal requirements:</strong> If required by law, court order, or governmental authority</li>
+    <li><strong>With your consent:</strong> Any other sharing requires your explicit consent</li>
+  </ul>
+
+  <h2>Data Retention</h2>
+  <p>We retain your tax records for a minimum of seven (7) years in accordance with IRS recordkeeping requirements. After this period, documents are securely destroyed. You may request a copy of your records or deletion of records not required to be retained by law at any time by contacting us.</p>
+
+  <h2>Your Rights</h2>
+  <p>You have the right to:</p>
+  <ul>
+    <li>Request a copy of the personal information we hold about you</li>
+    <li>Request correction of inaccurate information</li>
+    <li>Request deletion of information we are not legally required to retain</li>
+    <li>Opt out of any marketing communications</li>
+  </ul>
+  <p>To exercise any of these rights, contact us at <a href="tel:+15073197168">(507) 319-7168</a> or visit us at 1207 7th St NW #3, Rochester, MN 55901.</p>
+
+  <h2>Children's Privacy</h2>
+  <p>Our services are not directed to children under age 13. We do not knowingly collect personal information from children under 13. If you believe a child's information has been provided to us without proper consent, please contact us immediately.</p>
+
+  <h2>Changes to This Policy</h2>
+  <p>We may update this Privacy Policy from time to time. We will notify you of material changes by posting the new policy on this page with an updated revision date. Continued use of our services after changes constitutes acceptance of the updated policy.</p>
+
+  <h2>Contact Us</h2>
+  <p>If you have questions about this Privacy Policy or how we handle your information, contact us:</p>
+  <ul>
+    <li><strong>Phone:</strong> <a href="tel:+15073197168">(507) 319-7168</a></li>
+    <li><strong>Address:</strong> 1207 7th St NW #3, Rochester, MN 55901</li>
+    <li><strong>Hours:</strong> Open 24 hours</li>
+  </ul>
+</div>
+
+<footer aria-label="Site footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div><a href="index.html" class="footer-logo">Mownur<span>.</span></a></div>
+      <div class="footer-nav-cols">
+        <div><div class="footer-nav-title">Services</div><ul class="footer-nav-links" role="list"><li><a href="rochester-tax-preperation.html" class="footer-nav-link">Tax Preparation</a></li><li><a href="rochester-itin-application.html" class="footer-nav-link">ITIN Application</a></li><li><a href="rochester-ein.html" class="footer-nav-link">EIN Process</a></li><li><a href="rochester-registration-company.html" class="footer-nav-link">Company Registration</a></li></ul></div>
+        <div><div class="footer-nav-title">Resources</div><ul class="footer-nav-links" role="list"><li><a href="blog.html" class="footer-nav-link">Tax Blog</a></li><li><a href="faq.html" class="footer-nav-link">FAQ</a></li><li><a href="rochester-tax-resources.html" class="footer-nav-link">Tax Resources</a></li></ul></div>
+        <div><div class="footer-nav-title">Legal</div><ul class="footer-nav-links" role="list"><li><a href="privacy-policy.html" class="footer-nav-link">Privacy Policy</a></li><li><a href="terms-of-service.html" class="footer-nav-link">Terms of Service</a></li></ul></div>
+      </div>
+      <div>
+        <div class="footer-contact-item"><div class="footer-contact-label">Phone</div><a href="tel:+15073197168" class="footer-contact-val">(507) 319-7168</a></div>
+        <div class="footer-contact-item"><div class="footer-contact-label">Address</div><a href="https://www.google.com/maps/dir//1207+7th+St+NW+%233,+Rochester,+MN+55901" class="footer-contact-val" target="_blank" rel="noopener">1207 7th St NW #3<br>Rochester, MN 55901</a></div>
+        <div class="footer-contact-item"><div class="footer-contact-label">Hours</div><div class="footer-contact-val" style="cursor:default;">Open 24 Hours</div></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p class="footer-copy">© <span id="yr"></span> Mownur Tax Services · Rochester, MN</p><div class="footer-social"><a href="https://www.facebook.com/MownurTaxServices" class="footer-social-link" target="_blank" rel="noopener">Facebook</a><a href="upload-documents.html" class="footer-social-link">Upload Docs</a></div><a href="#" class="footer-backtop">Back to top ↑</a></div>
+  </div>
+</footer>
+<script>
+document.getElementById('yr').textContent=new Date().getFullYear();
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=window.innerWidth/2,my=window.innerHeight/2,rx=mx,ry=my;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+document.addEventListener('mouseleave',()=>document.body.classList.add('cur-hidden'));
+document.addEventListener('mouseenter',()=>document.body.classList.remove('cur-hidden'));
+document.querySelectorAll('a,button').forEach(el=>{el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));});
+(function loop(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;if(cur){cur.style.left=mx+'px';cur.style.top=my+'px';}if(ring){ring.style.left=rx+'px';ring.style.top=ry+'px';}requestAnimationFrame(loop);})();
+</script>
+</body>
+</html>

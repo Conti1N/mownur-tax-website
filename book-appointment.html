@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book an Appointment — Mownur Tax Services</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --dark: #13263a;
+      --light: #f9fbfd;
+      --accent: rgba(125,171,221,0.56);
+      --accent-solid: #7dabdd;
+      --gutter: 2rem;
+      --nav-h: 72px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--light);
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+      cursor: none;
+      overflow-x: hidden;
+    }
+    ::selection { background: var(--dark); color: var(--light); }
+    img { display: block; max-width: 100%; }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── CURSOR ── */
+    #cur {
+      position: fixed; top: 0; left: 0;
+      width: 10px; height: 10px;
+      border-radius: 50%; pointer-events: none;
+      z-index: 99999; transform: translate(-50%,-50%);
+      background: #fff; mix-blend-mode: difference;
+      transition: width 200ms cubic-bezier(.17,.84,.21,1),
+                  height 200ms cubic-bezier(.17,.84,.21,1),
+                  opacity 200ms ease;
+    }
+    #cur-ring {
+      position: fixed; top: 0; left: 0;
+      width: 36px; height: 36px;
+      border-radius: 50%; pointer-events: none;
+      z-index: 99998; transform: translate(-50%,-50%);
+      border: 1.5px solid rgba(255,255,255,0.5);
+      mix-blend-mode: difference;
+      transition: width 350ms cubic-bezier(.17,.84,.21,1),
+                  height 350ms cubic-bezier(.17,.84,.21,1),
+                  opacity 350ms ease;
+    }
+    body.cur-hover #cur { width: 20px; height: 20px; }
+    body.cur-hover #cur-ring { width: 56px; height: 56px; }
+    body.cur-hidden #cur, body.cur-hidden #cur-ring { opacity: 0; }
+
+    /* ── PAGE WIPE ── */
+    #page-wipe {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      width: 0; background: var(--dark);
+      z-index: 8000; pointer-events: none;
+    }
+
+    /* ── GRAIN ── */
+    .grain {
+      position: fixed; inset: 0; z-index: 9000; pointer-events: none; opacity: 0.025;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    /* ── NAV ── */
+    .nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+      height: var(--nav-h);
+      display: flex; align-items: center;
+      padding: 0 var(--gutter);
+      transition: background 400ms ease;
+    }
+    .nav.is-scrolled { background: rgba(249,251,253,0.92); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+    .nav-logo-wrap { flex: 1; display: flex; align-items: center; gap: 0.75rem; }
+    .nav-logo-svg { width: 28px; height: 28px; flex-shrink: 0; }
+    .nav-logo-rect { fill: var(--dark); transition: fill 300ms ease; }
+    .nav-logo-name {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.15rem; letter-spacing: -0.02em; line-height: 1;
+      overflow: hidden; height: 1.4em;
+      color: var(--dark); transition: color 300ms ease;
+    }
+    .nav-logo-shift { display: block; transition: transform 600ms cubic-bezier(.58,0,.07,1); }
+    .nav-burger {
+      display: flex; flex-direction: column; gap: 4px;
+      cursor: none; background: none; border: none; padding: 4px;
+    }
+    .nav-burger-line {
+      display: block; width: 16px; height: 1.5px; background: var(--dark);
+      transition: transform 350ms cubic-bezier(.17,.84,.21,1), opacity 350ms ease;
+      transform-origin: center;
+    }
+    .nav.is-open .nav-burger-line:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+    .nav.is-open .nav-burger-line:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav.is-open .nav-burger-line:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+    /* ── FULL-SCREEN MENU ── */
+    .menu-overlay {
+      position: fixed; inset: 0; z-index: 900;
+      background: var(--dark);
+      clip-path: inset(0 0 100% 0);
+      transition: clip-path 700ms cubic-bezier(.58,0,.07,1);
+    }
+    .menu-overlay.is-open { clip-path: inset(0 0 0% 0); }
+    .menu-inner {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      padding: calc(var(--nav-h) + 2rem) var(--gutter) 3rem;
+      opacity: 0; transition: opacity 200ms ease 100ms;
+    }
+    .menu-overlay.is-open .menu-inner { opacity: 1; transition: opacity 300ms ease 350ms; }
+    .menu-links { list-style: none; margin-bottom: 3rem; }
+    .menu-link-item { overflow: hidden; }
+    .menu-link-text {
+      display: block;
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 5vw, 4.5rem);
+      letter-spacing: -0.03em; line-height: 1.15;
+      color: var(--light); padding: 0.3rem 0;
+      transform: translateY(101%);
+      transition: transform 700ms cubic-bezier(.17,.84,.21,1), color 250ms ease;
+      border-bottom: 1px solid rgba(249,251,253,0.08);
+    }
+    .menu-overlay.is-open .menu-link-text { transform: translateY(0); }
+    .menu-link-text:hover { color: var(--accent-solid); }
+    .menu-link-item:nth-child(1) .menu-link-text { transition-delay: 0.06s; }
+    .menu-link-item:nth-child(2) .menu-link-text { transition-delay: 0.10s; }
+    .menu-link-item:nth-child(3) .menu-link-text { transition-delay: 0.14s; }
+    .menu-link-item:nth-child(4) .menu-link-text { transition-delay: 0.18s; }
+    .menu-link-item:nth-child(5) .menu-link-text { transition-delay: 0.22s; }
+    .menu-link-item:nth-child(6) .menu-link-text { transition-delay: 0.26s; }
+    .menu-link-item:nth-child(7) .menu-link-text { transition-delay: 0.30s; }
+    .menu-link-item:nth-child(8) .menu-link-text { transition-delay: 0.34s; }
+    .menu-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .menu-contact-links { display: flex; gap: 2rem; flex-wrap: wrap; }
+    .menu-contact-link {
+      font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(249,251,253,0.45); overflow: hidden; display: block;
+    }
+    .menu-contact-link span {
+      display: block; transform: translateY(101%);
+      transition: transform 600ms cubic-bezier(.17,.84,.21,1), color 250ms ease;
+    }
+    .menu-overlay.is-open .menu-contact-link span { transform: translateY(0); }
+    .menu-contact-link:hover span { color: var(--light); }
+    .menu-lang { display: flex; gap: 0.5rem; align-items: center; }
+    .menu-lang-btn {
+      font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(249,251,253,0.35); background: none; border: none; cursor: none;
+      padding: 0.4rem 0.7rem; border: 1px solid transparent; border-radius: 2px;
+      transition: color 200ms ease, border-color 200ms ease;
+    }
+    .menu-lang-btn.active { color: var(--light); border-color: rgba(249,251,253,0.25); }
+    .menu-lang-btn:hover { color: var(--light); }
+
+    /* ── PAGE HERO ── */
+    .page-hero {
+      background: var(--dark);
+      padding: calc(var(--nav-h) + 5rem) var(--gutter) 5rem;
+      position: relative; overflow: hidden;
+    }
+    .page-hero-cubes {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .cube {
+      position: absolute;
+      border: 1px solid rgba(249,251,253,0.06);
+      animation: cubeDrift linear infinite;
+    }
+    @keyframes cubeDrift {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 0; }
+      5%   { opacity: 1; }
+      95%  { opacity: 1; }
+      100% { transform: translateY(-110vh) rotate(180deg); opacity: 0; }
+    }
+    .cube.solid { background: rgba(249,251,253,0.025); border-color: rgba(249,251,253,0.08); }
+    .cube:nth-child(1)  { width:60px;  height:60px;  left:8%;   bottom:-10%; animation-duration:18s; animation-delay:0s; }
+    .cube:nth-child(2)  { width:20px;  height:20px;  left:22%;  bottom:-10%; animation-duration:14s; animation-delay:2s; }
+    .cube:nth-child(3)  { width:90px;  height:90px;  left:45%;  bottom:-10%; animation-duration:22s; animation-delay:5s; }
+    .cube:nth-child(4)  { width:35px;  height:35px;  left:65%;  bottom:-10%; animation-duration:16s; animation-delay:1s; }
+    .cube:nth-child(5)  { width:70px;  height:70px;  left:82%;  bottom:-10%; animation-duration:20s; animation-delay:3s; }
+    .cube:nth-child(6)  { width:25px;  height:25px;  left:35%;  bottom:-10%; animation-duration:13s; animation-delay:7s; }
+
+    .page-hero-inner {
+      position: relative; z-index: 2;
+      max-width: 900px;
+    }
+    .page-hero-label {
+      font-size: 0.7rem; font-weight: 500; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(249,251,253,0.65);
+      margin-bottom: 2rem;
+      display: flex; align-items: center; gap: 1rem;
+      opacity: 0; animation: hFadeUp 700ms cubic-bezier(.17,.84,.21,1) 0.2s both;
+    }
+    .page-hero-label::before {
+      content: ''; display: block;
+      width: 2.5rem; height: 1px; background: rgba(249,251,253,0.4);
+    }
+    .page-hero-h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 0.97; letter-spacing: -0.04em;
+      color: var(--light); margin-bottom: 1.5rem;
+    }
+    .page-hero-line { display: block; overflow: hidden; }
+    .page-hero-inner-text {
+      display: block;
+      opacity: 0; animation: hLineReveal 900ms cubic-bezier(.17,.84,.21,1) both;
+    }
+    .page-hero-line:nth-child(1) .page-hero-inner-text { animation-delay: 0.3s; }
+    .page-hero-line:nth-child(2) .page-hero-inner-text { animation-delay: 0.45s; }
+    .page-hero-sub {
+      font-size: 1rem; line-height: 1.7; color: rgba(249,251,253,0.65);
+      max-width: 480px;
+      opacity: 0; animation: hFadeUp 700ms cubic-bezier(.17,.84,.21,1) 0.6s both;
+    }
+    @keyframes hLineReveal {
+      from { transform: translateY(105%); opacity: 0; }
+      to   { transform: translateY(0);    opacity: 1; }
+    }
+    @keyframes hFadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .rv {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 700ms cubic-bezier(.17,.84,.21,1),
+                  transform 700ms cubic-bezier(.17,.84,.21,1);
+    }
+    .rv.in { opacity: 1; transform: translateY(0); }
+
+    /* ── BOOKING SECTION ── */
+    .booking-section {
+      padding: 5rem var(--gutter);
+      background: var(--light);
+    }
+    .booking-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 4rem;
+      align-items: start;
+    }
+    @media(max-width:860px){
+      .booking-grid { grid-template-columns: 1fr; gap: 3rem; }
+    }
+
+    /* ── LEFT: INFO ── */
+    .booking-info {}
+    .section-label {
+      font-size: 0.68rem; font-weight: 500; letter-spacing: 0.18em;
+      text-transform: uppercase; color: rgba(19,38,58,0.45);
+      margin-bottom: 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+    }
+    .section-label::before {
+      content: ''; display: block;
+      width: 2rem; height: 1px; background: rgba(19,38,58,0.25);
+    }
+    .booking-info-head {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      letter-spacing: -0.03em; line-height: 1.1;
+      margin-bottom: 1.5rem;
+    }
+    .booking-info-body {
+      font-size: 0.95rem; line-height: 1.75;
+      color: rgba(19,38,58,0.65);
+      margin-bottom: 2.5rem;
+    }
+
+    .hours-block {
+      background: var(--dark);
+      border-radius: 4px;
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .hours-block-title {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: rgba(249,251,253,0.45);
+      margin-bottom: 1rem;
+    }
+    .hours-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.55rem 0;
+      border-bottom: 1px solid rgba(249,251,253,0.07);
+      font-size: 0.88rem;
+      color: rgba(249,251,253,0.85);
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-row .day { color: rgba(249,251,253,0.5); }
+
+    .contact-quick-links {
+      display: flex; flex-direction: column; gap: 0.6rem;
+    }
+    .cql-link {
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 0.82rem; font-weight: 500; letter-spacing: 0.04em;
+      padding: 0.8rem 0;
+      border-bottom: 1px solid rgba(19,38,58,0.1);
+      color: var(--dark);
+      transition: color 200ms ease, transform 200ms cubic-bezier(.17,.84,.21,1);
+    }
+    .cql-link:first-child { border-top: 1px solid rgba(19,38,58,0.1); }
+    .cql-link:hover { color: var(--accent-solid); transform: translateX(4px); }
+    .cql-link span { opacity: 0.4; }
+
+    /* ── RIGHT: BOOKING FORM ── */
+    .booking-form-wrap {
+      background: #fff;
+      border: 1px solid rgba(19,38,58,0.08);
+      border-radius: 6px;
+      padding: 2.5rem;
+      box-shadow:
+        0 1px 2px rgba(19,38,58,0.04),
+        0 4px 16px rgba(19,38,58,0.06),
+        0 20px 60px rgba(19,38,58,0.04);
+    }
+
+    .step-indicators {
+      display: flex; gap: 0.5rem; margin-bottom: 2rem;
+    }
+    .step-dot {
+      height: 3px; border-radius: 2px; flex: 1;
+      background: rgba(19,38,58,0.1);
+      transition: background 300ms ease;
+    }
+    .step-dot.active { background: var(--dark); }
+    .step-dot.done { background: var(--accent-solid); }
+
+    .form-step { display: none; }
+    .form-step.active { display: block; }
+
+    .form-step-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.6rem; letter-spacing: -0.02em;
+      margin-bottom: 0.4rem;
+    }
+    .form-step-sub {
+      font-size: 0.85rem; color: rgba(19,38,58,0.5);
+      margin-bottom: 1.75rem; line-height: 1.6;
+    }
+
+    /* Service picker */
+    .service-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.6rem; margin-bottom: 1.75rem;
+    }
+    @media(max-width:500px){ .service-grid { grid-template-columns: 1fr; } }
+    .service-card {
+      border: 1.5px solid rgba(19,38,58,0.1);
+      border-radius: 4px; padding: 1rem 1.1rem;
+      cursor: none;
+      transition: border-color 200ms ease, background 200ms ease, transform 200ms cubic-bezier(.17,.84,.21,1);
+    }
+    .service-card:hover { border-color: rgba(19,38,58,0.25); transform: translateY(-1px); }
+    .service-card.selected {
+      border-color: var(--dark);
+      background: var(--dark); color: var(--light);
+    }
+    .service-card-name {
+      font-weight: 600; font-size: 0.88rem; margin-bottom: 0.2rem;
+    }
+    .service-card-desc {
+      font-size: 0.75rem; opacity: 0.55; line-height: 1.4;
+    }
+    .service-card.selected .service-card-desc { opacity: 0.6; }
+
+    /* Calendar */
+    .calendar-wrap { margin-bottom: 1.75rem; }
+    .cal-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .cal-month {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.1rem; letter-spacing: -0.02em;
+    }
+    .cal-nav-btn {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1px solid rgba(19,38,58,0.15);
+      background: none; cursor: none;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem; color: var(--dark);
+      transition: background 200ms ease, border-color 200ms ease, transform 200ms cubic-bezier(.17,.84,.21,1);
+    }
+    .cal-nav-btn:hover { background: var(--dark); color: var(--light); border-color: var(--dark); transform: scale(1.05); }
+    .cal-grid {
+      display: grid; grid-template-columns: repeat(7,1fr); gap: 2px;
+    }
+    .cal-weekday {
+      text-align: center; font-size: 0.65rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(19,38,58,0.35); padding: 0.4rem 0;
+    }
+    .cal-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 0.82rem; border-radius: 50%; cursor: none;
+      transition: background 180ms ease, color 180ms ease, transform 180ms cubic-bezier(.17,.84,.21,1);
+    }
+    .cal-day.empty { cursor: default; }
+    .cal-day.past { color: rgba(19,38,58,0.2); cursor: default; }
+    .cal-day.unavailable { color: rgba(19,38,58,0.25); cursor: default; }
+    .cal-day.available:hover { background: rgba(19,38,58,0.08); transform: scale(1.1); }
+    .cal-day.selected { background: var(--dark); color: var(--light); transform: scale(1.08); }
+    .cal-day.today { font-weight: 600; box-shadow: 0 0 0 1.5px var(--accent-solid); }
+
+    /* Time slots */
+    .slots-label {
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(19,38,58,0.45);
+      margin-bottom: 0.75rem;
+    }
+    .slots-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 0.5rem;
+      margin-bottom: 1.75rem;
+    }
+    .slot-btn {
+      padding: 0.6rem; border-radius: 3px;
+      border: 1.5px solid rgba(19,38,58,0.12);
+      background: none; cursor: none; font-family: inherit;
+      font-size: 0.8rem; font-weight: 500; color: var(--dark);
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms cubic-bezier(.17,.84,.21,1);
+    }
+    .slot-btn:hover { border-color: rgba(19,38,58,0.3); transform: translateY(-1px); }
+    .slot-btn.selected { background: var(--dark); color: var(--light); border-color: var(--dark); }
+    .slot-btn.taken { color: rgba(19,38,58,0.25); border-color: rgba(19,38,58,0.06); cursor: default; text-decoration: line-through; }
+
+    /* Form fields */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
+    @media(max-width:500px){ .form-row { grid-template-columns: 1fr; } }
+    .form-field { margin-bottom: 0.75rem; }
+    .form-field label {
+      display: block; font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(19,38,58,0.5); margin-bottom: 0.4rem;
+    }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%; padding: 0.75rem 0.9rem;
+      border: 1.5px solid rgba(19,38,58,0.12);
+      border-radius: 3px; background: var(--light);
+      font-family: 'Inter', sans-serif; font-size: 0.88rem;
+      color: var(--dark); cursor: none;
+      transition: border-color 200ms ease, box-shadow 200ms ease;
+      outline: none;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      border-color: var(--dark);
+      box-shadow: 0 0 0 3px rgba(19,38,58,0.06);
+    }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+
+    /* Booking summary card */
+    .summary-card {
+      background: var(--light);
+      border: 1px solid rgba(19,38,58,0.08);
+      border-radius: 4px; padding: 1.25rem 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+    .summary-card-title {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(19,38,58,0.4);
+      margin-bottom: 0.9rem;
+    }
+    .summary-row {
+      display: flex; justify-content: space-between; align-items: start;
+      padding: 0.4rem 0; font-size: 0.85rem;
+      border-bottom: 1px solid rgba(19,38,58,0.06);
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-key { color: rgba(19,38,58,0.5); }
+    .summary-val { font-weight: 500; text-align: right; }
+
+    /* Navigation buttons */
+    .form-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 1rem; margin-top: 1.25rem;
+    }
+    .btn-back {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.06em;
+      color: rgba(19,38,58,0.5); background: none; border: none; cursor: none;
+      padding: 0.75rem 0;
+      transition: color 200ms ease;
+    }
+    .btn-back:hover { color: var(--dark); }
+    .btn-next {
+      font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--light);
+      background: var(--dark);
+      border: 1px solid var(--dark);
+      border-radius: 2px; padding: 0.85rem 1.8rem;
+      cursor: none; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      transition: background 200ms ease, transform 200ms cubic-bezier(.17,.84,.21,1),
+                  box-shadow 200ms ease;
+    }
+    .btn-next:hover {
+      background: #1d3752; border-color: #1d3752;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(19,38,58,0.2);
+    }
+    .btn-next:active { transform: translateY(0); box-shadow: none; }
+    .btn-next:disabled { opacity: 0.4; pointer-events: none; }
+
+    /* Success state */
+    .success-state {
+      display: none; text-align: center; padding: 1rem 0;
+    }
+    .success-state.visible { display: block; }
+    .success-icon {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--dark); display: flex; align-items: center;
+      justify-content: center; margin: 0 auto 1.5rem;
+      font-size: 1.5rem; color: var(--light);
+    }
+    .success-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.8rem; letter-spacing: -0.02em; margin-bottom: 0.75rem;
+    }
+    .success-body {
+      font-size: 0.9rem; line-height: 1.7; color: rgba(19,38,58,0.6);
+      max-width: 380px; margin: 0 auto 2rem;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--dark);
+      padding: 4rem var(--gutter) 2.5rem;
+      position: relative; overflow: hidden;
+    }
+    .footer-bg-blocks { position: absolute; inset: 0; pointer-events: none; }
+    .fbg {
+      position: absolute;
+      border: 1px solid rgba(249,251,253,0.06);
+    }
+    .footer-inner { position: relative; z-index: 2; max-width: 1400px; margin: 0 auto; }
+    .footer-top {
+      display: grid; grid-template-columns: auto 1fr auto;
+      gap: 4rem; margin-bottom: 3rem;
+      border-bottom: 1px solid rgba(249,251,253,0.08); padding-bottom: 3rem;
+    }
+    @media(max-width:760px){ .footer-top { grid-template-columns: 1fr; gap: 2.5rem; } }
+    .footer-logo {
+      font-family: 'DM Serif Display', serif;
+      font-size: 2.5rem; letter-spacing: -0.04em; color: var(--light);
+    }
+    .footer-logo span { color: var(--accent-solid); }
+    .footer-nav-cols {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 2.5rem;
+    }
+    @media(max-width:600px){ .footer-nav-cols { grid-template-columns: 1fr 1fr; } }
+    .footer-nav-title {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(249,251,253,0.35); margin-bottom: 1.2rem;
+    }
+    .footer-nav-links { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+    .footer-nav-link {
+      font-size: 0.88rem; color: rgba(249,251,253,0.65);
+      transition: color 200ms ease;
+    }
+    .footer-nav-link:hover { color: var(--light); }
+    .footer-contact-col { display: flex; flex-direction: column; gap: 1.5rem; }
+    .footer-contact-label {
+      font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(249,251,253,0.35); margin-bottom: 0.3rem;
+    }
+    .footer-contact-val {
+      font-size: 0.88rem; color: rgba(249,251,253,0.7);
+      transition: color 200ms ease;
+    }
+    .footer-contact-val:hover { color: var(--light); }
+    .footer-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-copy { font-size: 0.78rem; color: rgba(249,251,253,0.3); }
+    .footer-social { display: flex; gap: 1.5rem; }
+    .footer-social-link {
+      font-size: 0.78rem; color: rgba(249,251,253,0.4);
+      transition: color 200ms ease;
+    }
+    .footer-social-link:hover { color: var(--light); }
+    .footer-backtop {
+      font-size: 0.78rem; color: rgba(249,251,253,0.4);
+      transition: color 200ms ease;
+    }
+    .footer-backtop:hover { color: var(--light); }
+  </style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div id="cur" aria-hidden="true"></div>
+<div id="cur-ring" aria-hidden="true"></div>
+<div id="page-wipe" aria-hidden="true"></div>
+
+<!-- ── FULL-SCREEN MENU ── -->
+<div class="menu-overlay" id="menuOverlay" role="dialog" aria-modal="true" aria-label="Navigation menu">
+  <div class="menu-inner">
+    <ul class="menu-links" role="list">
+      <li class="menu-link-item"><a href="rochester-tax-preperation.html" class="menu-link-text">Tax Preparation</a></li>
+      <li class="menu-link-item"><a href="rochester-itin-application.html" class="menu-link-text">ITIN Application</a></li>
+      <li class="menu-link-item"><a href="rochester-ein.html" class="menu-link-text">EIN Process</a></li>
+      <li class="menu-link-item"><a href="rochester-registration-company.html" class="menu-link-text">Company Registration</a></li>
+      <li class="menu-link-item"><a href="rochester-tax-resources.html" class="menu-link-text">Tax Resources</a></li>
+      <li class="menu-link-item"><a href="mn-tax-help-check-my-refund.html" class="menu-link-text">Check My Refund</a></li>
+      <li class="menu-link-item"><a href="index.html#contact" class="menu-link-text">Contact</a></li>
+    </ul>
+    <div class="menu-bottom">
+      <div class="menu-contact-links">
+        <a href="tel:+15073197168" class="menu-contact-link"><span>(507) 319-7168</span></a>
+        <a href="mailto:info@mownurservices.com" class="menu-contact-link"><span>info@mownurservices.com</span></a>
+        <a href="https://www.facebook.com/MownurTaxServices" class="menu-contact-link" target="_blank" rel="noopener"><span>Facebook</span></a>
+        <a href="upload-documents.html" class="menu-contact-link"><span>Upload Documents</span></a>
+      </div>
+      <div class="menu-lang" role="group" aria-label="Language">
+        <button class="menu-lang-btn active" id="langEN" aria-pressed="true">EN</button>
+        <button class="menu-lang-btn" id="langSO" aria-pressed="false">SO</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── NAV ── -->
+<nav class="nav" id="nav" role="navigation" aria-label="Main navigation">
+  <div class="nav-logo-wrap">
+    <svg class="nav-logo-svg" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect class="nav-logo-rect" x="1"  y="1"  width="11" height="11" rx="1"/>
+      <rect class="nav-logo-rect" x="16" y="1"  width="11" height="11" rx="1" opacity="0.6"/>
+      <rect class="nav-logo-rect" x="1"  y="16" width="11" height="11" rx="1" opacity="0.4"/>
+      <rect class="nav-logo-rect" x="16" y="16" width="11" height="11" rx="1" opacity="0.8"/>
+    </svg>
+    <a href="index.html" class="nav-logo-name" aria-label="Mownur Tax Services home">
+      <span class="nav-logo-shift">Mownur Tax Services</span>
+    </a>
+  </div>
+  <button class="nav-burger" id="navBurger" aria-label="Open menu" aria-expanded="false">
+    <span class="nav-burger-line"></span>
+    <span class="nav-burger-line"></span>
+    <span class="nav-burger-line"></span>
+  </button>
+</nav>
+
+<!-- ── PAGE HERO ── -->
+<section class="page-hero" aria-label="Book an Appointment">
+  <div class="page-hero-cubes" aria-hidden="true">
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+    <div class="cube solid"></div>
+    <div class="cube"></div>
+  </div>
+  <div class="page-hero-inner">
+    <p class="page-hero-label">Mownur Tax Services · Rochester</p>
+    <h1 class="page-hero-h1">
+      <span class="page-hero-line"><span class="page-hero-inner-text">Book an</span></span>
+      <span class="page-hero-line"><span class="page-hero-inner-text">Appointment.</span></span>
+    </h1>
+    <p class="page-hero-sub">Choose your service, pick a date and time, and we'll be ready when you arrive — fast, accurate, and stress-free.</p>
+  </div>
+</section>
+
+<!-- ── BOOKING SECTION ── -->
+<section class="booking-section" aria-label="Appointment booking">
+  <div class="booking-grid">
+
+    <!-- LEFT: Info -->
+    <div class="booking-info">
+      <p class="section-label rv">Plan Your Visit</p>
+      <h2 class="booking-info-head rv" style="transition-delay:.06s">Everything you need,<br>in one appointment.</h2>
+      <p class="booking-info-body rv" style="transition-delay:.12s">Our bilingual team (English & Somali) is here to help with all your tax and financial needs. Select your service, choose a time that works for you, and skip the wait.</p>
+
+      <div class="hours-block rv" style="transition-delay:.18s">
+        <div class="hours-block-title">Business Hours</div>
+        <div class="hours-row">
+          <span class="day">Monday – Friday</span>
+          <span>10:00 AM – 7:00 PM</span>
+        </div>
+        <div class="hours-row">
+          <span class="day">Saturday</span>
+          <span>10:00 AM – 6:00 PM</span>
+        </div>
+        <div class="hours-row">
+          <span class="day">Sunday</span>
+          <span>10:00 AM – 1:00 PM</span>
+        </div>
+      </div>
+
+      <div class="contact-quick-links rv" style="transition-delay:.24s">
+        <a href="tel:+15073197168" class="cql-link">
+          Call Us — (507) 319-7168 <span>↗</span>
+        </a>
+        <a href="mailto:info@mownurservices.com" class="cql-link">
+          Email Us <span>↗</span>
+        </a>
+        <a href="https://www.google.com/maps/dir//1207+7th+St+NW+%233,+Rochester,+MN+55901" target="_blank" rel="noopener" class="cql-link">
+          1207 7th St NW #3, Rochester — Get Directions <span>↗</span>
+        </a>
+        <a href="upload-documents.html" class="cql-link">
+          Upload Documents in Advance <span>↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- RIGHT: Booking Form -->
+    <div class="booking-form-wrap rv" style="transition-delay:.1s">
+
+      <!-- Step indicators -->
+      <div class="step-indicators" role="progressbar" aria-label="Booking steps">
+        <div class="step-dot active" id="dot0"></div>
+        <div class="step-dot" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+        <div class="step-dot" id="dot3"></div>
+      </div>
+
+      <!-- STEP 1: Service Selection -->
+      <div class="form-step active" id="step0">
+        <h3 class="form-step-title">Select a Service</h3>
+        <p class="form-step-sub">What can we help you with? Pick one to continue.</p>
+        <div class="service-grid" id="serviceGrid">
+          <div class="service-card" data-service="Tax Preparation">
+            <div class="service-card-name">Tax Preparation</div>
+            <div class="service-card-desc">Personal &amp; business returns, all backgrounds welcome</div>
+          </div>
+          <div class="service-card" data-service="ITIN Application">
+            <div class="service-card-name">ITIN Application</div>
+            <div class="service-card-desc">Individual Taxpayer ID — new or renewal</div>
+          </div>
+          <div class="service-card" data-service="Other / General Question">
+            <div class="service-card-name">Other / General Question</div>
+            <div class="service-card-desc">Not sure? We'll figure it out together</div>
+          </div>
+          <div class="service-card" data-service="EIN Process">
+            <div class="service-card-name">EIN Process</div>
+            <div class="service-card-desc">Employer Identification Number for your business</div>
+          </div>
+          <div class="service-card" data-service="Company Registration">
+            <div class="service-card-name">Company Registration</div>
+            <div class="service-card-desc">LLC, sole proprietor, and business formation</div>
+          </div>
+          <div class="service-card" data-service="Tax Resources">
+            <div class="service-card-name">Tax Consultation</div>
+            <div class="service-card-desc">Questions, planning, and tax guidance</div>
+          </div>
+          <div class="service-card" data-service="Refund Check">
+            <div class="service-card-name">Refund Review</div>
+            <div class="service-card-desc">Check status &amp; troubleshoot refund issues</div>
+          </div>
+          <div class="service-card" data-service="Other">
+            <div class="service-card-name">Other / Not Sure</div>
+            <div class="service-card-desc">We'll figure it out together when you arrive</div>
+          </div>
+        </div>
+        <div class="form-nav">
+          <span></span>
+          <button class="btn-next" id="nextStep0" disabled>Choose a Date &amp; Time →</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Date & Time -->
+      <div class="form-step" id="step1">
+        <h3 class="form-step-title">Pick a Date &amp; Time</h3>
+        <p class="form-step-sub">Select an available day, then choose your preferred time slot.</p>
+        <div class="calendar-wrap">
+          <div class="cal-header">
+            <button class="cal-nav-btn" id="calPrev" aria-label="Previous month">‹</button>
+            <div class="cal-month" id="calMonthLabel"></div>
+            <button class="cal-nav-btn" id="calNext" aria-label="Next month">›</button>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <div id="slotsSection" style="display:none;">
+          <div class="slots-label">Available Times for <span id="slotDateLabel"></span></div>
+          <div class="slots-grid" id="slotsGrid"></div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" id="backStep1">← Back</button>
+          <button class="btn-next" id="nextStep1" disabled>Your Details →</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Contact Info -->
+      <div class="form-step" id="step2">
+        <h3 class="form-step-title">Your Details</h3>
+        <p class="form-step-sub">We'll send a confirmation to the info below.</p>
+        <div class="form-row">
+          <div class="form-field">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" placeholder="Amina" autocomplete="given-name" />
+          </div>
+          <div class="form-field">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Hassan" autocomplete="family-name" />
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" placeholder="(612) 000-0000" autocomplete="tel" />
+        </div>
+        <div class="form-field">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="you@email.com" autocomplete="email" />
+        </div>
+        <div class="form-field">
+          <label for="lang-pref">Language Preference</label>
+          <select id="lang-pref">
+            <option value="English">English</option>
+            <option value="Somali">Somali (Soomaali)</option>
+            <option value="No Preference">No Preference</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="notes">Notes / Questions (optional)</label>
+          <textarea id="notes" placeholder="Any documents you'll bring, questions you have, or anything else we should know…"></textarea>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" id="backStep2">← Back</button>
+          <button class="btn-next" id="nextStep2" disabled>Review Booking →</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Review & Confirm -->
+      <div class="form-step" id="step3">
+        <h3 class="form-step-title">Confirm Your Booking</h3>
+        <p class="form-step-sub">Look good? Submit to lock in your appointment.</p>
+        <div class="summary-card">
+          <div class="summary-card-title">Appointment Summary</div>
+          <div class="summary-row">
+            <span class="summary-key">Service</span>
+            <span class="summary-val" id="sumService">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Date</span>
+            <span class="summary-val" id="sumDate">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Time</span>
+            <span class="summary-val" id="sumTime">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Name</span>
+            <span class="summary-val" id="sumName">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Phone</span>
+            <span class="summary-val" id="sumPhone">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Email</span>
+            <span class="summary-val" id="sumEmail">—</span>
+          </div>
+          <div class="summary-row">
+            <span class="summary-key">Language</span>
+            <span class="summary-val" id="sumLang">—</span>
+          </div>
+          <div class="summary-row" id="sumNotesRow" style="display:none;">
+            <span class="summary-key">Notes</span>
+            <span class="summary-val" id="sumNotes" style="max-width:200px;">—</span>
+          </div>
+        </div>
+        <div class="form-nav">
+          <button class="btn-back" id="backStep3">← Edit</button>
+          <button class="btn-next" id="confirmBtn">Confirm Appointment ↗</button>
+        </div>
+      </div>
+
+      <!-- SUCCESS -->
+      <div class="success-state" id="successState">
+        <div class="success-icon">✓</div>
+        <div class="success-title">You're Booked!</div>
+        <p class="success-body">We've received your appointment request. Our team will call you to confirm within 24 hours. See you soon!</p>
+        <a href="index.html" class="btn-next" style="display:inline-flex;">Back to Home ↗</a>
+      </div>
+
+    </div><!-- /booking-form-wrap -->
+  </div><!-- /booking-grid -->
+</section>
+
+<!-- ── FOOTER ── -->
+<footer aria-label="Site footer">
+  <div class="footer-bg-blocks" aria-hidden="true">
+    <div class="fbg" style="width:120px;height:120px;top:15%;left:8%;opacity:.4;"></div>
+    <div class="fbg" style="width:60px;height:60px;top:55%;left:20%;opacity:.25;"></div>
+    <div class="fbg" style="width:200px;height:200px;top:10%;right:10%;opacity:.18;"></div>
+    <div class="fbg" style="width:80px;height:80px;top:65%;right:25%;opacity:.3;"></div>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <a href="index.html" class="footer-logo" aria-label="Mownur Tax Services home">Mownur<span>.</span></a>
+      </div>
+      <div class="footer-nav-cols">
+        <div class="footer-nav-group">
+          <div class="footer-nav-title">Services</div>
+          <ul class="footer-nav-links" role="list">
+            <li><a href="rochester-tax-preperation.html" class="footer-nav-link">Tax Preparation</a></li>
+            <li><a href="rochester-itin-application.html" class="footer-nav-link">ITIN Application</a></li>
+            
+            <li><a href="rochester-ein.html" class="footer-nav-link">EIN Process</a></li>
+            <li><a href="rochester-registration-company.html" class="footer-nav-link">Company Registration</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-group">
+          <div class="footer-nav-title">Resources</div>
+          <ul class="footer-nav-links" role="list">
+            <li><a href="rochester-tax-resources.html" class="footer-nav-link">Tax Resources</a></li>
+            <li><a href="mn-tax-help-check-my-refund.html" class="footer-nav-link">Check My Refund</a></li>
+            <li><a href="upload-documents.html" class="footer-nav-link">Upload Documents</a></li>
+          </ul>
+        </div>
+        <div class="footer-nav-group">
+          <div class="footer-nav-title">Company</div>
+          <ul class="footer-nav-links" role="list">
+            <li><a href="index.html#about" class="footer-nav-link">About Us</a></li>
+            <li><a href="index.html#contact" class="footer-nav-link">Contact</a></li>
+            <li><a href="book-appointment.html" class="footer-nav-link">Book Appointment</a></li>
+            <li><a href="reviews.html" class="footer-nav-link">Reviews</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-contact-col">
+        <div class="footer-contact-item">
+          <div class="footer-contact-label">Phone</div>
+          <a href="tel:+15073197168" class="footer-contact-val">(507) 319-7168</a>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-label">Address</div>
+          <a href="https://www.google.com/maps/dir//1207+7th+St+NW+%233,+Rochester,+MN+55901" class="footer-contact-val" target="_blank" rel="noopener">1207 7th St NW #3<br>Rochester, MN 55901</a>
+        </div>
+        <div class="footer-contact-item">
+          <div class="footer-contact-label">Hours</div>
+          <div class="footer-contact-val" style="cursor:default;">Mon–Fri 10–7 · Sat 10–6 · Sun 10–1</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copy">© <span id="yr"></span> Mownur Tax Services · Rochester, MN</p>
+      <div class="footer-social">
+        <a href="https://www.facebook.com/MownurTaxServices" class="footer-social-link" target="_blank" rel="noopener">Facebook</a>
+        <a href="upload-documents.html" class="footer-social-link">Upload Docs</a>
+      </div>
+      <a href="#" class="footer-backtop" aria-label="Back to top">Back to top ↑</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ── CURSOR ── */
+const cur=document.getElementById('cur'), ring=document.getElementById('cur-ring');
+let mx=window.innerWidth/2, my=window.innerHeight/2, rx=mx, ry=my;
+document.addEventListener('mousemove',e=>{ mx=e.clientX; my=e.clientY; });
+document.addEventListener('mouseleave',()=>document.body.classList.add('cur-hidden'));
+document.addEventListener('mouseenter',()=>document.body.classList.remove('cur-hidden'));
+(function tick(){
+  cur.style.left=mx+'px'; cur.style.top=my+'px';
+  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
+  ring.style.left=rx+'px'; ring.style.top=ry+'px';
+  requestAnimationFrame(tick);
+})();
+document.addEventListener('mouseover',e=>{
+  if(e.target.closest('a,button,[role="tab"],[role="button"],[tabindex],.service-card,.cal-day.available,.slot-btn'))
+    document.body.classList.add('cur-hover');
+});
+document.addEventListener('mouseout',e=>{
+  if(e.target.closest('a,button,[role="tab"],[role="button"],[tabindex],.service-card,.cal-day.available,.slot-btn'))
+    document.body.classList.remove('cur-hover');
+});
+
+/* ── NAV ── */
+const nav=document.getElementById('nav');
+const burger=document.getElementById('navBurger');
+const menuOverlay=document.getElementById('menuOverlay');
+let menuOpen=false;
+burger.addEventListener('click',()=>{
+  menuOpen=!menuOpen;
+  nav.classList.toggle('is-open',menuOpen);
+  menuOverlay.classList.toggle('is-open',menuOpen);
+  burger.setAttribute('aria-expanded',menuOpen);
+  document.body.style.overflow=menuOpen?'hidden':'';
+});
+menuOverlay.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+  menuOpen=false;
+  nav.classList.remove('is-open');
+  menuOverlay.classList.remove('is-open');
+  burger.setAttribute('aria-expanded','false');
+  document.body.style.overflow='';
+}));
+window.addEventListener('scroll',()=>{
+  nav.classList.toggle('is-scrolled', window.scrollY>20);
+},{ passive:true });
+
+/* ── SCROLL REVEAL ── */
+const reveals=document.querySelectorAll('.rv');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('in'); });
+},{threshold:0.08, rootMargin:'-30px 0px'});
+reveals.forEach(el=>io.observe(el));
+
+/* ── YEAR ── */
+document.getElementById('yr').textContent=new Date().getFullYear();
+
+/* ── LANG SWITCH ── */
+document.getElementById('langEN').addEventListener('click',function(){
+  this.classList.add('active'); this.setAttribute('aria-pressed','true');
+  document.getElementById('langSO').classList.remove('active');
+  document.getElementById('langSO').setAttribute('aria-pressed','false');
+});
+document.getElementById('langSO').addEventListener('click',function(){
+  this.classList.add('active'); this.setAttribute('aria-pressed','true');
+  document.getElementById('langEN').classList.remove('active');
+  document.getElementById('langEN').setAttribute('aria-pressed','false');
+  window.location.href='index.html';
+});
+
+/* ═══════════════════════════════════════════
+   BOOKING WIZARD
+═══════════════════════════════════════════ */
+let currentStep=0;
+const booking = {
+  service: null,
+  date: null,      // Date object
+  dateLabel: null, // "Tuesday, March 18"
+  time: null,
+  fname: null, lname: null, phone: null, email: null, lang: null, notes: null
+};
+
+/* Helpers */
+function goToStep(n){
+  document.getElementById('step'+currentStep).classList.remove('active');
+  document.getElementById('step'+n).classList.add('active');
+  // update dots
+  for(let i=0;i<4;i++){
+    const d=document.getElementById('dot'+i);
+    d.classList.remove('active','done');
+    if(i<n) d.classList.add('done');
+    else if(i===n) d.classList.add('active');
+  }
+  currentStep=n;
+  // scroll form top into view
+  document.querySelector('.booking-form-wrap').scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+/* ── STEP 1: Service ── */
+document.getElementById('serviceGrid').addEventListener('click',e=>{
+  const card=e.target.closest('.service-card');
+  if(!card) return;
+  document.querySelectorAll('.service-card').forEach(c=>c.classList.remove('selected'));
+  card.classList.add('selected');
+  booking.service=card.dataset.service;
+  document.getElementById('nextStep0').disabled=false;
+});
+document.getElementById('nextStep0').addEventListener('click',()=>goToStep(1));
+
+/* ── STEP 2: Calendar ── */
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+// Fake "taken" slots — simulate some unavailability
+const takenSlots={};
+function fakeTaken(d){
+  const key=d.toDateString();
+  if(!takenSlots[key]){
+    // randomly mark some slots taken based on date seed
+    const seed=d.getDate()+d.getMonth();
+    const morning=['10:00 AM','10:30 AM','11:00 AM'];
+    const all=getSlots(d);
+    takenSlots[key]=all.filter((_,i)=>((seed+i)%5===0));
+  }
+  return takenSlots[key];
+}
+
+function getSlots(d){
+  const day=d.getDay(); // 0=Sun
+  if(day===0) return ['10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM'];
+  if(day===6) return ['10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM'];
+  return ['10:00 AM','10:30 AM','11:00 AM','11:30 AM','12:00 PM','12:30 PM','1:00 PM','1:30 PM','2:00 PM','2:30 PM','3:00 PM','3:30 PM','4:00 PM','4:30 PM','5:00 PM','5:30 PM','6:00 PM','6:30 PM'];
+}
+
+let calYear, calMonth;
+const today=new Date();
+calYear=today.getFullYear();
+calMonth=today.getMonth();
+
+function renderCalendar(){
+  document.getElementById('calMonthLabel').textContent=MONTHS[calMonth]+' '+calYear;
+  const grid=document.getElementById('calGrid');
+  grid.innerHTML='';
+  // Weekday headers
+  DAYS.forEach(d=>{
+    const cell=document.createElement('div');
+    cell.className='cal-weekday'; cell.textContent=d;
+    grid.appendChild(cell);
+  });
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  // Empty cells
+  for(let i=0;i<firstDay;i++){
+    const e=document.createElement('div'); e.className='cal-day empty'; grid.appendChild(e);
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const cell=document.createElement('div');
+    const dt=new Date(calYear,calMonth,d);
+    const isPast=dt<new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const isToday=dt.toDateString()===today.toDateString();
+    if(isPast){
+      cell.className='cal-day past'; cell.textContent=d;
+    } else {
+      cell.className='cal-day available'; cell.textContent=d;
+      if(isToday) cell.classList.add('today');
+      // If this date is selected
+      if(booking.date && dt.toDateString()===booking.date.toDateString())
+        cell.classList.add('selected');
+      cell.addEventListener('click',()=>selectDate(dt));
+    }
+    grid.appendChild(cell);
+  }
+}
+
+function selectDate(dt){
+  booking.date=dt;
+  booking.time=null;
+  document.getElementById('nextStep1').disabled=true;
+  renderCalendar();
+  // Show slots
+  const slotsSec=document.getElementById('slotsSection');
+  const slotsGrid=document.getElementById('slotsGrid');
+  slotsSec.style.display='block';
+  document.getElementById('slotDateLabel').textContent=
+    DAYS[dt.getDay()]+', '+MONTHS[dt.getMonth()]+' '+dt.getDate();
+  const slots=getSlots(dt);
+  const taken=fakeTaken(dt);
+  slotsGrid.innerHTML='';
+  slots.forEach(s=>{
+    const btn=document.createElement('button');
+    btn.className='slot-btn';
+    btn.textContent=s;
+    if(taken.includes(s)){
+      btn.classList.add('taken'); btn.disabled=true;
+    } else {
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        booking.time=s;
+        booking.dateLabel=DAYS[dt.getDay()]+', '+MONTHS[dt.getMonth()]+' '+dt.getDate()+', '+calYear;
+        document.getElementById('nextStep1').disabled=false;
+      });
+    }
+    slotsGrid.appendChild(btn);
+  });
+}
+
+document.getElementById('calPrev').addEventListener('click',()=>{
+  calMonth--; if(calMonth<0){calMonth=11;calYear--;}
+  booking.date=null; booking.time=null;
+  document.getElementById('slotsSection').style.display='none';
+  document.getElementById('nextStep1').disabled=true;
+  renderCalendar();
+});
+document.getElementById('calNext').addEventListener('click',()=>{
+  calMonth++; if(calMonth>11){calMonth=0;calYear++;}
+  booking.date=null; booking.time=null;
+  document.getElementById('slotsSection').style.display='none';
+  document.getElementById('nextStep1').disabled=true;
+  renderCalendar();
+});
+document.getElementById('backStep1').addEventListener('click',()=>goToStep(0));
+document.getElementById('nextStep1').addEventListener('click',()=>goToStep(2));
+
+/* ── STEP 3: Contact ── */
+function validateContact(){
+  const f=document.getElementById('fname').value.trim();
+  const l=document.getElementById('lname').value.trim();
+  const p=document.getElementById('phone').value.trim();
+  const e=document.getElementById('email').value.trim();
+  document.getElementById('nextStep2').disabled=!(f&&l&&p&&e);
+}
+['fname','lname','phone','email'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',validateContact);
+});
+document.getElementById('backStep2').addEventListener('click',()=>goToStep(1));
+document.getElementById('nextStep2').addEventListener('click',()=>{
+  booking.fname=document.getElementById('fname').value.trim();
+  booking.lname=document.getElementById('lname').value.trim();
+  booking.phone=document.getElementById('phone').value.trim();
+  booking.email=document.getElementById('email').value.trim();
+  booking.lang=document.getElementById('lang-pref').value;
+  booking.notes=document.getElementById('notes').value.trim();
+  // Populate summary
+  document.getElementById('sumService').textContent=booking.service;
+  document.getElementById('sumDate').textContent=booking.dateLabel;
+  document.getElementById('sumTime').textContent=booking.time;
+  document.getElementById('sumName').textContent=booking.fname+' '+booking.lname;
+  document.getElementById('sumPhone').textContent=booking.phone;
+  document.getElementById('sumEmail').textContent=booking.email;
+  document.getElementById('sumLang').textContent=booking.lang;
+  if(booking.notes){
+    document.getElementById('sumNotesRow').style.display='flex';
+    document.getElementById('sumNotes').textContent=booking.notes;
+  }
+  goToStep(3);
+});
+
+/* ── STEP 4: Confirm ── */
+document.getElementById('backStep3').addEventListener('click',()=>goToStep(2));
+document.getElementById('confirmBtn').addEventListener('click',()=>{
+  // Build a mailto: link so the appointment request reaches the office inbox
+  const dateStr = booking.date ? booking.date.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'}) : 'TBD';
+  const subject = encodeURIComponent('Appointment Request — ' + booking.service);
+  const body = encodeURIComponent(
+    'Hi Mownur Tax Services,\n\n' +
+    'I would like to book an appointment:\n\n' +
+    'Service: ' + booking.service + '\n' +
+    'Date: ' + dateStr + '\n' +
+    'Time: ' + (booking.time || 'TBD') + '\n' +
+    'Name: ' + (booking.name || '') + '\n' +
+    'Phone: ' + (booking.phone || '') + '\n' +
+    'Email: ' + (booking.email || '') + '\n\n' +
+    'Please confirm this appointment at your earliest convenience.\n\nThank you.'
+  );
+  window.open('mailto:info@mownurservices.com?subject=' + subject + '&body=' + body, '_blank');
+  document.getElementById('step3').classList.remove('active');
+  document.getElementById('successState').classList.add('visible');
+  for(let i=0;i<4;i++) document.getElementById('dot'+i).classList.remove('active','done');
+  document.querySelectorAll('.step-dot').forEach(d=>d.classList.add('done'));
+});
+
+/* ── INIT ── */
+renderCalendar();
+</script>
+</body>
+</html>
