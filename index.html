@@ -2407,10 +2407,42 @@ function setLang(lang) {
   localStorage.setItem('lang', lang);
 }
 
-document.getElementById('langEN')?.addEventListener('click', ()=>setLang('en'));
-document.getElementById('langSO')?.addEventListener('click', ()=>setLang('so'));
-document.getElementById('navLangEN')?.addEventListener('click', ()=>setLang('en'));
-document.getElementById('navLangSO')?.addEventListener('click', ()=>setLang('so'));
+function setLangWithWipe(lang) {
+  if(lang === currentLang) return;
+  const wipe = document.getElementById('page-wipe');
+
+  /* wipe in */
+  wipe.style.transition = 'width 400ms cubic-bezier(.58,0,.07,1)';
+  wipe.style.width = '100%';
+
+  mainWrapper.style.transition = 'opacity 400ms cubic-bezier(.58,0,.07,1), transform 400ms cubic-bezier(.58,0,.07,1)';
+  mainWrapper.style.opacity = '0';
+  mainWrapper.style.transform = 'translateX(-4%)';
+
+  /* swap text at peak coverage */
+  setTimeout(() => {
+    setLang(lang);
+    window.scrollTo(0, 0);
+  }, 380);
+
+  /* wipe out */
+  setTimeout(() => {
+    wipe.style.transition = 'width 500ms cubic-bezier(.07,.84,0,1), left 0ms 500ms';
+    wipe.style.left = '100%';
+    wipe.style.width = '0%';
+
+    mainWrapper.style.transition = 'opacity 500ms cubic-bezier(.07,.84,0,1), transform 500ms cubic-bezier(.07,.84,0,1)';
+    mainWrapper.style.opacity = '1';
+    mainWrapper.style.transform = 'translateX(0)';
+  }, 420);
+
+  setTimeout(() => { wipe.style.left = '0'; }, 940);
+}
+
+document.getElementById('langEN')?.addEventListener('click', ()=>setLangWithWipe('en'));
+document.getElementById('langSO')?.addEventListener('click', ()=>setLangWithWipe('so'));
+document.getElementById('navLangEN')?.addEventListener('click', ()=>setLangWithWipe('en'));
+document.getElementById('navLangSO')?.addEventListener('click', ()=>setLangWithWipe('so'));
 
 /* restore saved lang on load */
 (function(){ const saved = localStorage.getItem('lang'); if(saved && saved!=='en') setLang(saved); })();
